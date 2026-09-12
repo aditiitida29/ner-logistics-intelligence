@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   Route as RouteIcon,
   Clock,
+  Calendar,
   ShieldAlert,
   Sparkles,
   ArrowRight,
@@ -53,6 +54,50 @@ export const DashboardPage: React.FC = () => {
   const [districts, setDistricts] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Live Precision Date & Time Tracking (declared before early returns)
+  const [liveDateTime, setLiveDateTime] = useState<{
+    timeStr: string;
+    seconds: string;
+    hoursMinutes: string;
+    dayName: string;
+    formattedDate: string;
+    dayOfYear: number;
+  }>(() => {
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - startOfYear.getTime();
+    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    return {
+      timeStr: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+      seconds: now.getSeconds().toString().padStart(2, '0'),
+      hoursMinutes: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false }),
+      dayName: now.toLocaleDateString('en-IN', { weekday: 'short' }),
+      formattedDate: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      dayOfYear
+    };
+  });
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 0);
+      const diff = now.getTime() - startOfYear.getTime();
+      const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      setLiveDateTime({
+        timeStr: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+        seconds: now.getSeconds().toString().padStart(2, '0'),
+        hoursMinutes: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false }),
+        dayName: now.toLocaleDateString('en-IN', { weekday: 'short' }),
+        formattedDate: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        dayOfYear
+      });
+    };
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const fetchDashboard = async () => {
     try {
@@ -100,36 +145,85 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Header & Regional Summary */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+      {/* Top Header & Regional Summary Bar with Tactical Chronometer */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl backdrop-blur-md">
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight font-sans">
               {selectedRegion === 'Entire NER' ? 'North Eastern Region (NER)' : selectedRegion} Operational Command
             </h1>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30">
-              Live Monitoring
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+              LIVE 24/7 MONITORING
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time accessibility scoring, multi-state road disruption analysis, and supply convoy tracking.
+          <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">
+            Real-time accessibility scoring, multi-state road disruption analysis, and supply convoy tracking across the 8 North Eastern states.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={fetchDashboard}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-300 transition"
-          >
-            <RefreshCw className="h-3.5 w-3.5 text-slate-400" />
-            <span>{t('refreshData')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('route-intel')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition shadow-sm"
-          >
-            <span>{t('analyzeRoute')}</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+
+        {/* Date, Time & Action Controls Group */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Tactical Live Operational Timepiece */}
+          <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-slate-950/90 border border-slate-800 shadow-inner">
+            {/* Calendar Date Badge */}
+            <div className="flex items-center gap-2.5 pr-3 border-r border-slate-800/80">
+              <div className="h-8 w-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                <Calendar className="h-4 w-4" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+                  {liveDateTime.dayName}
+                </span>
+                <span className="text-xs font-bold text-slate-200 tracking-wide font-sans">
+                  {liveDateTime.formattedDate}
+                </span>
+              </div>
+            </div>
+
+            {/* Precision Digital Clock */}
+            <div className="flex items-center gap-2.5 pl-1">
+              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <Clock className="h-4 w-4 animate-pulse" />
+              </div>
+              <div className="flex flex-col text-left">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-mono text-base sm:text-lg font-black text-slate-100 tracking-widest tabular-nums">
+                    {liveDateTime.hoursMinutes}
+                  </span>
+                  <span className="font-mono text-xs font-bold text-emerald-400 tabular-nums">
+                    :{liveDateTime.seconds}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400 font-mono ml-0.5">
+                    IST
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[9px] font-mono text-slate-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>UTC +5:30 • Day {liveDateTime.dayOfYear}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={fetchDashboard}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-slate-100 transition shadow-sm"
+              title="Refresh live telemetry feeds"
+            >
+              <RefreshCw className="h-3.5 w-3.5 text-slate-400" />
+              <span className="hidden sm:inline">{t('refreshData')}</span>
+            </button>
+            <button
+              onClick={() => setCurrentPage('route-intel')}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#8E4A23] hover:bg-[#6F3B1D] text-xs font-bold text-white transition shadow-md"
+            >
+              <span>{t('analyzeRoute')}</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 

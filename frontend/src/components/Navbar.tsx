@@ -13,6 +13,7 @@ import {
   User,
   ChevronDown,
   Clock,
+  Calendar,
   Navigation,
   Film
 } from 'lucide-react';
@@ -57,23 +58,24 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
     setShowCinematicIntro
   } = useApp();
 
-  const [currentTime, setCurrentTime] = useState<string>('');
+  const [liveClock, setLiveClock] = useState<{
+    time: string;
+    date: string;
+  }>(() => {
+    const now = new Date();
+    return {
+      time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) + ' IST',
+      date: now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' })
+    };
+  });
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setCurrentTime(
-        now.toLocaleDateString('en-IN', {
-          weekday: 'short',
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        }) + ' IST'
-      );
+      setLiveClock({
+        time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) + ' IST',
+        date: now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' })
+      });
     };
     updateTime();
     const timer = setInterval(updateTime, 1000);
@@ -151,10 +153,17 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
 
         {/* Right: Controls & User Profile */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Live Date/Time Clock */}
-          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-300">
-            <Clock className="h-3.5 w-3.5 text-blue-400" />
-            <span>{currentTime || 'Loading...'}</span>
+          {/* Live Date/Time Badge (Visible on lg and xl screens) */}
+          <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 shadow-inner">
+            <span className="flex items-center gap-1.5 text-slate-400 border-r border-slate-800 pr-2">
+              <Calendar className="h-3.5 w-3.5 text-blue-400" />
+              <span>{liveClock.date}</span>
+            </span>
+            <span className="flex items-center gap-1.5 text-slate-200">
+              <Clock className="h-3.5 w-3.5 text-emerald-400" />
+              <span className="text-emerald-400 font-bold">{liveClock.time}</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+            </span>
           </div>
 
           {/* Region Selector */}
