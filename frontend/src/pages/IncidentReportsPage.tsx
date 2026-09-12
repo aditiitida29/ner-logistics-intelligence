@@ -17,7 +17,8 @@ import {
   Clock,
   User,
   Image as ImageIcon,
-  X
+  X,
+  Radio
 } from 'lucide-react';
 
 const INCIDENT_TYPES: IncidentType[] = [
@@ -35,9 +36,13 @@ export const IncidentReportsPage: React.FC = () => {
     isOffline,
     pendingOfflineCount,
     syncOfflineReports,
+    setIsOfflineQueueOpen,
     inspectedIncidentId,
     setInspectedIncidentId,
-    addToast
+    addToast,
+    userLocation,
+    syncRealLocation,
+    isLocating
   } = useApp();
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -49,8 +54,8 @@ export const IncidentReportsPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState<IncidentSeverity>('High');
   const [locationName, setLocationName] = useState('');
-  const [latitude, setLatitude] = useState<string>('27.5020');
-  const [longitude, setLongitude] = useState<string>('92.1030');
+  const [latitude, setLatitude] = useState<string>(() => userLocation ? userLocation.latitude.toFixed(5) : '27.5020');
+  const [longitude, setLongitude] = useState<string>(() => userLocation ? userLocation.longitude.toFixed(5) : '92.1030');
   const [reportedBy, setReportedBy] = useState('PWD Highway Patrol Officer');
   const [estimatedRestoration, setEstimatedRestoration] = useState('6-8 Hours');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -78,28 +83,27 @@ export const IncidentReportsPage: React.FC = () => {
     loadIncidents();
   }, []);
 
-  // HTML5 "Use My Location"
-  const handleUseMyLocation = () => {
-    if (!navigator.geolocation) {
-      addToast('Browser geolocation not supported. Please input coordinates manually.', 'warning');
+  // HTML5 Real GPS "Use My Location"
+  const handleUseMyLocation = async () => {
+    if (userLocation) {
+      setLatitude(userLocation.latitude.toFixed(5));
+      setLongitude(userLocation.longitude.toFixed(5));
+      setLocationName(`GPS Verified Ground Location (±${userLocation.accuracy}m)`);
+      addToast(`Real GPS coordinates applied: ${userLocation.latitude.toFixed(4)}°N, ${userLocation.longitude.toFixed(4)}°E (±${userLocation.accuracy}m)`, 'success');
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLatitude(pos.coords.latitude.toFixed(5));
-        setLongitude(pos.coords.longitude.toFixed(5));
-        setLocationName('Field GPS Captured Location');
-        addToast('Current GPS coordinates applied!', 'success');
-      },
-      (err) => {
-        console.warn(err);
-        addToast('Unable to access device GPS. Defaulting to regional NER coordinates.', 'info');
-        setLatitude('26.1445');
-        setLongitude('91.7362');
-        setLocationName('Guwahati Sector (Fallback)');
-      }
-    );
+
+    await syncRealLocation(true);
   };
+
+  // Sync when userLocation updates
+  useEffect(() => {
+    if (userLocation && (!locationName || locationName.includes('Ground Location'))) {
+      setLatitude(userLocation.latitude.toFixed(5));
+      setLongitude(userLocation.longitude.toFixed(5));
+      setLocationName(`GPS Verified Ground Location (±${userLocation.accuracy}m)`);
+    }
+  }, [userLocation]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -207,7 +211,15 @@ export const IncidentReportsPage: React.FC = () => {
         </div>
 
         {/* Offline Status & Sync Banner */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setIsOfflineQueueOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-300 font-semibold transition"
+          >
+            <Radio className="h-3.5 w-3.5 text-blue-400" />
+            <span>Offline Queue ({pendingOfflineCount})</span>
+          </button>
+
           {isOffline ? (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-950/70 border border-rose-500/40 text-xs text-rose-300 font-semibold">
               <WifiOff className="h-4 w-4 text-rose-400" />
@@ -277,10 +289,17 @@ export const IncidentReportsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleUseMyLocation}
-                  className="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                  disabled={isLocating}
+                  className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 disabled:opacity-50 transition"
+                  title="Capture physical device GPS coordinates"
                 >
-                  <MapPin className="h-3 w-3" />
-                  <span>Use My Location</span>
+                  <MapPin className={`h-3 w-3 ${isLocating ? 'animate-spin' : ''}`} />
+                  <span>{isLocating ? 'Acquiring GPS...' : 'Use My GPS Location'}</span>
+                  {userLocation && (
+                    <span className="text-[10px] text-emerald-400 font-mono font-normal">
+                      (±{userLocation.accuracy}m)
+                    </span>
+                  )}
                 </button>
               </div>
               <input

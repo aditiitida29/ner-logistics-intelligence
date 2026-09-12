@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { api } from '../services/api';
 import { OfflineSyncService } from '../services/offlineSync';
@@ -22,12 +22,23 @@ import {
 } from 'lucide-react';
 
 export const DriverPortalPage: React.FC = () => {
-  const { user, isOffline, addToast, setCurrentPage } = useApp();
+  const { user, isOffline, addToast, setCurrentPage, userLocation, syncRealLocation, isLocating } = useApp();
   const [gpsSending, setGpsSending] = useState(false);
   const [lastGpsSent, setLastGpsSent] = useState<string>('Just now');
   const [currentSpeed, setCurrentSpeed] = useState<number>(48);
-  const [currentLat, setCurrentLat] = useState<number>(26.850);
-  const [currentLng, setCurrentLng] = useState<number>(93.200);
+  const [currentLat, setCurrentLat] = useState<number>(() => userLocation ? +(userLocation.latitude.toFixed(4)) : 26.850);
+  const [currentLng, setCurrentLng] = useState<number>(() => userLocation ? +(userLocation.longitude.toFixed(4)) : 93.200);
+
+  // Sync state if real GPS coordinates become available
+  React.useEffect(() => {
+    if (userLocation) {
+      setCurrentLat(+(userLocation.latitude.toFixed(4)));
+      setCurrentLng(+(userLocation.longitude.toFixed(4)));
+      if (userLocation.speed !== null && userLocation.speed > 0) {
+        setCurrentSpeed(Math.round(userLocation.speed * 3.6));
+      }
+    }
+  }, [userLocation]);
 
   // Quick hazard report state
   const [hazardType, setHazardType] = useState('Landslide');
@@ -274,6 +285,22 @@ export const DriverPortalPage: React.FC = () => {
                 <span className="text-slate-300">{lastGpsSent}</span>
               </div>
             </div>
+
+            {/* Real GPS Sync Action */}
+            <button
+              type="button"
+              onClick={() => syncRealLocation(true)}
+              disabled={isLocating}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#142013] border border-[#263824] hover:border-[#436B3B] text-xs font-semibold text-[#F0F7EE] transition"
+            >
+              <Navigation className={`h-3.5 w-3.5 ${isLocating ? 'animate-spin text-[#34D399]' : 'text-[#34D399]'}`} />
+              <span>{isLocating ? 'Acquiring Device GPS...' : 'Sync Device GPS Location'}</span>
+              {userLocation && (
+                <span className="text-[10px] text-[#A7F3D0] font-mono">
+                  (±{userLocation.accuracy}m)
+                </span>
+              )}
+            </button>
 
             <button
               onClick={handleTransmitGPS}

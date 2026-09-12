@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, Circle, useMap } from 'react-leaflet';
 import { Incident, Vehicle, District, RouteOption } from '../../types';
-import { createIncidentIcon, createVehicleIcon, createDistrictIcon } from './mapIcons';
+import { createIncidentIcon, createVehicleIcon, createDistrictIcon, createUserLocationIcon } from './mapIcons';
 import { MapLegend } from './MapLegend';
-import { Layers, Eye, ShieldAlert, Truck, AlertTriangle, Building2, CloudRain } from 'lucide-react';
+import { Layers, Eye, ShieldAlert, Truck, AlertTriangle, Building2, CloudRain, WifiOff, Crosshair } from 'lucide-react';
 import { Badge } from '../UI/Badge';
+import { useApp } from '../../context/AppContext';
 
 interface MapViewProps {
   incidents?: Incident[];
@@ -19,12 +20,24 @@ interface MapViewProps {
   zoom?: number;
 }
 
-// Helper to re-center map if coordinates change
-const ChangeView: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
+// Helper to re-center map if coordinates change or user requests pan to location
+const MapController: React.FC<{
+  center: [number, number];
+  zoom: number;
+  userCoords: [number, number] | null;
+  panTrigger: number;
+}> = ({ center, zoom, userCoords, panTrigger }) => {
   const map = useMap();
   React.useEffect(() => {
     map.setView(center, zoom);
   }, [center, zoom, map]);
+
+  React.useEffect(() => {
+    if (panTrigger > 0 && userCoords) {
+      map.flyTo(userCoords, 13, { duration: 1.5 });
+    }
+  }, [panTrigger, userCoords, map]);
+
   return null;
 };
 
@@ -40,6 +53,9 @@ export const MapView: React.FC<MapViewProps> = ({
   center = [26.15, 92.9],
   zoom = 7
 }) => {
+  const { isOffline, userLocation, syncRealLocation, isLocating } = useApp();
+  const [panTrigger, setPanTrigger] = useState(0);
+
   // Layer controls
   const [layers, setLayers] = useState({
     roads: true,
@@ -70,8 +86,36 @@ export const MapView: React.FC<MapViewProps> = ({
 
   return (
     <div className="relative w-full rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950" style={{ height }}>
-      {/* Floating Layer Controls Toggle */}
-      <div className="absolute top-4 right-4 z-[400]">
+      {/* Offline Cached Map Indicator */}
+      {isOffline && (
+        <div className="absolute top-4 left-14 z-[400] flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/95 border border-amber-500/40 text-amber-300 text-xs font-mono shadow-2xl backdrop-blur-md">
+          <WifiOff className="h-3.5 w-3.5 text-amber-400 animate-pulse" />
+          <span>OFFLINE CACHED GIS ACTIVE</span>
+        </div>
+      )}
+
+      {/* Floating Controls: Locate Me & Layer Controls */}
+      <div className="absolute top-4 right-4 z-[400] flex items-center gap-2">
+        {/* Real GPS "Locate Me" Button */}
+        <button
+          onClick={() => {
+            if (userLocation) {
+              setPanTrigger(prev => prev + 1);
+            }
+            syncRealLocation(true);
+          }}
+          disabled={isLocating}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900/95 border border-slate-700 text-slate-200 text-xs font-semibold shadow-xl hover:bg-slate-800 hover:text-emerald-400 backdrop-blur-md transition disabled:opacity-50"
+          title="Pan to your physical GPS location"
+        >
+          <Crosshair className={`h-4 w-4 ${isLocating ? 'animate-spin text-emerald-400' : 'text-emerald-400'}`} />
+          <span className="hidden sm:inline">{isLocating ? 'Acquiring GPS...' : 'Locate Me'}</span>
+          {userLocation && (
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping ml-0.5" />
+          )}
+        </button>
+
+        {/* Floating Layer Controls Toggle */}
         <div className="relative">
           <button
             onClick={() => setShowLayerMenu(!showLayerMenu)}
@@ -162,7 +206,12 @@ export const MapView: React.FC<MapViewProps> = ({
         scrollWheelZoom={true}
         className="w-full h-full"
       >
-        <ChangeView center={center} zoom={zoom} />
+        <MapController
+          center={center}
+          zoom={zoom}
+          userCoords={userLocation ? [userLocation.latitude, userLocation.longitude] : null}
+          panTrigger={panTrigger}
+        />
 
         {/* Dark-themed OpenStreetMap Tiles */}
         <TileLayer
@@ -297,6 +346,58 @@ export const MapView: React.FC<MapViewProps> = ({
             </Popup>
           </Marker>
         ))}
+
+        {/* 6. Real Physical User GPS Location Marker */}
+        {userLocation && (
+          <>
+            <Circle
+              center={[userLocation.latitude, userLocation.longitude]}
+              radius={Math.max(userLocation.accuracy, 25)}
+              pathOptions={{
+                color: '#3EB489',
+                fillColor: '#3EB489',
+                fillOpacity: 0.14,
+                weight: 1.5,
+                dashArray: '3, 6'
+              }}
+            />
+            <Marker
+              position={[userLocation.latitude, userLocation.longitude]}
+              icon={createUserLocationIcon()}
+            >
+              <Popup>
+                <div className="p-1.5 space-y-2 font-sans min-w-[220px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-white flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                      Your Real Location (GPS)
+                    </span>
+                    <Badge variant="accessible" size="sm">LIVE</Badge>
+                  </div>
+                  <p className="text-xs font-mono font-semibold text-emerald-300">
+                    {userLocation.latitude.toFixed(5)}°N, {userLocation.longitude.toFixed(5)}°E
+                  </p>
+                  <div className="pt-1.5 border-t border-slate-700 text-[11px] space-y-1 text-slate-300">
+                    <p className="flex justify-between">
+                      <span className="text-slate-400">GPS Accuracy:</span>
+                      <span className="font-mono text-emerald-400 font-semibold">±{userLocation.accuracy} meters</span>
+                    </p>
+                    {userLocation.speed !== null && userLocation.speed > 0 && (
+                      <p className="flex justify-between">
+                        <span className="text-slate-400">Ground Speed:</span>
+                        <span className="font-mono text-slate-200">{(userLocation.speed * 3.6).toFixed(1)} km/h</span>
+                      </p>
+                    )}
+                    <p className="flex justify-between">
+                      <span className="text-slate-400">Acquired At:</span>
+                      <span className="font-mono text-slate-400">{new Date(userLocation.timestamp).toLocaleTimeString()}</span>
+                    </p>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          </>
+        )}
       </MapContainer>
 
       {/* Map Legend */}

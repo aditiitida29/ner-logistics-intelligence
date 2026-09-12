@@ -10,6 +10,15 @@ export interface ToastMessage {
   message: string;
 }
 
+export interface UserLocation {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  speed: number | null;
+  heading: number | null;
+  timestamp: number;
+}
+
 interface AppContextType {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -27,6 +36,7 @@ interface AppContextType {
   isDemoMode: boolean;
   setIsDemoMode: (active: boolean) => void;
   isOffline: boolean;
+  setIsOffline: (offline: boolean) => void;
   pendingOfflineCount: number;
   syncOfflineReports: () => Promise<void>;
   isOfflineQueueOpen: boolean;
@@ -44,6 +54,11 @@ interface AppContextType {
   setInspectedDistrictId: (id: number | null) => void;
   lastUpdated: string;
   setLastUpdated: (time: string) => void;
+  userLocation: UserLocation | null;
+  isLocating: boolean;
+  syncRealLocation: (notify?: boolean) => Promise<void>;
+  showCinematicIntro: boolean;
+  setShowCinematicIntro: (show: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -74,6 +89,87 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [inspectedIncidentId, setInspectedIncidentId] = useState<number | null>(null);
   const [inspectedDistrictId, setInspectedDistrictId] = useState<number | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>('Just now');
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [showCinematicIntro, setShowCinematicIntro] = useState<boolean>(true);
+
+  // Sync real physical device GPS location
+  const syncRealLocation = async (notify: boolean = false): Promise<void> => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      if (notify) addToast('Device does not support Geolocation API.', 'warning');
+      return;
+    }
+
+    setIsLocating(true);
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc: UserLocation = {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+            accuracy: Math.round(pos.coords.accuracy),
+            speed: pos.coords.speed,
+            heading: pos.coords.heading,
+            timestamp: pos.timestamp
+          };
+          setUserLocation(loc);
+          setIsLocating(false);
+          if (notify) {
+            addToast(`🛰️ GPS synchronized: ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°E (±${loc.accuracy}m)`, 'success');
+          }
+          resolve();
+        },
+        (err) => {
+          console.warn('Geolocation access:', err.message);
+          setIsLocating(false);
+          if (notify) {
+            addToast('Physical GPS access denied or unavailable. Fallback to NER headquarters.', 'info');
+          }
+          resolve();
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    });
+  };
+
+  // Continuous background location watcher + initial acquisition
+  useEffect(() => {
+    syncRealLocation(false);
+
+    let watchId: number | null = null;
+    if (typeof window !== 'undefined' && navigator.geolocation) {
+      try {
+        watchId = navigator.geolocation.watchPosition(
+          (pos) => {
+            setUserLocation({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              accuracy: Math.round(pos.coords.accuracy),
+              speed: pos.coords.speed,
+              heading: pos.coords.heading,
+              timestamp: pos.timestamp
+            });
+          },
+          (err) => {
+            console.warn('GPS continuous watch error:', err.message);
+          },
+          { enableHighAccuracy: true, maximumAge: 10000 }
+        );
+      } catch (e) {
+        // graceful fallback
+      }
+    }
+
+    return () => {
+      if (watchId !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, []);
 
   // Translation helper
   const t = (key: string): string => {
@@ -163,6 +259,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isDemoMode,
       setIsDemoMode,
       isOffline,
+      setIsOffline,
       pendingOfflineCount,
       syncOfflineReports,
       isOfflineQueueOpen,
@@ -179,7 +276,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       inspectedDistrictId,
       setInspectedDistrictId,
       lastUpdated,
-      setLastUpdated
+      setLastUpdated,
+      userLocation,
+      isLocating,
+      syncRealLocation,
+      showCinematicIntro,
+      setShowCinematicIntro
     }}>
       {children}
     </AppContext.Provider>

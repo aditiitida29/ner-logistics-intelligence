@@ -58,6 +58,7 @@ export interface Incident {
   created_at: string;
   estimated_restoration: string;
   district_name?: string | null;
+  sync_status?: string;
 }
 
 export type VehicleStatus = 'Moving' | 'Delayed' | 'Stopped' | 'At Risk' | 'Delivered';

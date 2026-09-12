@@ -92,31 +92,36 @@ Outputs: **Recommended Route (Route A)** + **Alternate Corridors (Route B & C)**
 
 ---
 
-## 🗺️ Complete Application Structure (12 Dedicated Pages)
+## 🗺️ Complete Application Structure (13 Dedicated Pages & Consoles)
 
-1. **Login Page**: Enterprise gov aesthetic, authenticated JWT session, 1-click demo button.
-2. **Main Dashboard**: 6 real-time KPI cards, regional state filter (8 states), interactive Leaflet overview map, 4 Recharts analytics widgets, dynamic AI Insights panel.
-3. **Live GIS Map**: Dedicated full-screen GIS command center, layer controls (Roads, Incidents, Fleet, Districts, Emergency Corridors, Weather), filter by incident severity and vehicle status, search-to-pan.
-4. **Route Intelligence**: Origin/Destination selection, commodity & vehicle selectors, multi-route comparison (Recommended vs Alternates), AI Explainability card, interactive route geometry.
-5. **Vehicle Tracking**: Live fleet directory, toggleable **Real-Time GPS Simulation (ON/OFF)**, speed monitoring, status badges (Moving, Delayed, At Risk, Stopped, Delivered), vehicle inspection drawer.
-6. **Incident & Field Reports**: Geo-tagged incident submission form, HTML5 "Use My Location" coordinate finder, photographic evidence upload to `/uploads`, **Offline PWA support** with auto-sync when back online.
-7. **Alert Center**: Critical, Warning, and Information feeds, Mark as Read individual action, "Mark All as Read", automatic alert generation for high-severity landslides and delayed cold-chain vaccines.
-8. **Logistics / Deliveries**: Essential supplies table, filter by commodity (Medicines, Rice, Food, Relief, Fuels), priority levels (Normal, High, Emergency), detailed shipment milestone modal, and "Create Delivery" dispatch form.
-9. **District Intelligence**: Comprehensive district metrics across all 8 NER states, sortable table, and District Detail View modal featuring 7-day accessibility trend lines and active disruptions.
-10. **Emergency Mode**: One-click **ACTIVATE EMERGENCY MODE** toggle, war-room high-visibility operational theme, safe emergency corridors table, critical roadblock map, and emergency supply prioritization.
-11. **Analytics**: 7-day vs 30-day timeframe toggle, accessibility resilience trend, incident occurrences vs PWD clearances, average freight delay by district, and commodity throughput distribution.
-12. **Settings**: Officer profile, notification preferences toggles, multilingual language selector (English, Hindi, Assamese), and demo diagnostics.
+1. **Login Page**: Enterprise gov aesthetic, authenticated JWT session, 5-role quick switcher for 1-click RBAC login.
+2. **Main Dashboard**: 6 real-time KPI cards, 4 Questions Command Matrix (What is happening, Where, What will happen, What should we do), interactive Leaflet overview map, 4 Recharts analytics widgets, dynamic AI Insights panel, and System Impact section.
+3. **Driver Console (Driver Portal)**: Dedicated highway driver view with active mission details (essential medicines, cold-chain), checkpoint progress milestones, live highway hazard warnings, GPS position transmitter, and quick disruption reporter.
+4. **Live GIS Map**: Dedicated full-screen GIS command center, layer controls (Roads, Incidents, Fleet, Districts, Emergency Corridors, Weather), filter by incident severity and vehicle status, search-to-pan, and offline cached GIS indicator.
+5. **Route Intelligence**: Origin/Destination selection, commodity & vehicle selectors, multi-route comparison (Recommended vs Alternates), AI Explainability card, interactive route geometry, works 100% offline with local heuristic engine.
+6. **Vehicle Tracking**: Live fleet directory, toggleable **Real-Time GPS Simulation (ON/OFF)**, speed monitoring, status badges (Moving, Delayed, At Risk, Stopped, Delivered), vehicle inspection drawer.
+7. **Incident & Field Reports**: Geo-tagged incident submission form, HTML5 "Use My Location" coordinate finder, photographic evidence upload, **Offline PWA queue integration** with auto-sync when back online.
+8. **Alert Center**: Critical, Warning, and Information feeds, Mark as Read individual action, "Mark All as Read", automatic alert generation for high-severity landslides and delayed cold-chain vaccines.
+9. **Logistics / Deliveries**: Essential supplies table, filter by commodity (Medicines, Rice, Food, Relief, Fuels), priority levels (Normal, High, Emergency), detailed shipment milestone modal, and "Create Delivery" dispatch form.
+10. **District Intelligence**: Comprehensive district metrics across all 8 NER states, sortable table, and District Detail View modal featuring 7-day accessibility trend lines and active disruptions.
+11. **Emergency Mode**: One-click **ACTIVATE EMERGENCY MODE** toggle, war-room high-visibility operational theme, safe emergency corridors table, critical roadblock map, and emergency supply prioritization.
+12. **Analytics**: 7-day vs 30-day timeframe toggle, accessibility resilience trend, incident occurrences vs PWD clearances, average freight delay by district, and commodity throughput distribution.
+13. **Settings**: Officer profile, notification preferences toggles, multilingual language selector (English, Hindi, Assamese), and demo diagnostics.
 
 ---
 
-## 📱 Offline & Low-Connectivity Capabilities
+## 📱 Offline-First & Low-Connectivity PWA Architecture
 
-In remote hilly terrains (e.g. Sela Pass, Tuirial, Longleng) where cellular coverage drops:
-1. The platform automatically detects offline state (`navigator.onLine = false`) and displays an **OFFLINE MODE** indicator.
-2. Field officers can capture incident descriptions, coordinates, and severity locally.
-3. Submissions are stored in client-side storage (`localStorage` / IndexedDB).
-4. The header indicates the pending queue (e.g., `3 Pending Sync`).
-5. Once internet connectivity is restored, the application automatically synchronizes all pending reports with the central backend and displays a success notification.
+In remote hilly terrains (e.g. Sela Pass, Tuirial, Longleng) where cellular coverage drops, the platform continues to work:
+1. **PWA Manifest & Service Worker**: `manifest.json` and `sw.js` cache the application shell, runtime API queries, and GIS layers for full offline operation.
+2. **Offline Data Queue**: Dedicated interactive queue displaying:
+   - `Incident #104`, `Incident #105`
+   - `GPS Update #782`
+   - `Delivery Update #55`
+   - Real-time statuses: `Pending`, `Syncing`, `Synced`, `Failed`, with retry counts and a manual **"Sync Now"** button.
+3. **Offline Simulation Toggle**: Navbar includes an **"Offline Sim: ON/OFF"** toggle allowing evaluators to simulate complete offline mode with 1 click without disabling hardware WiFi.
+4. **Local Fallback Data Store & Local AI Routing**: When network connectivity fails or is simulated off, all 13 pages seamlessly run on local cached data and local AI heuristic calculation.
+5. **Background Synchronization**: Once internet connectivity is restored (or offline sim is turned off), queued field records and GPS positions are automatically uploaded to the cloud database with instant toast confirmations.
 
 ---
 

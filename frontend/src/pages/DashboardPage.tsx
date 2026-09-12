@@ -16,7 +16,12 @@ import {
   ArrowRight,
   TrendingUp,
   AlertOctagon,
-  RefreshCw
+  RefreshCw,
+  Compass,
+  HelpCircle,
+  Zap,
+  CheckCircle2,
+  ShieldCheck
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -226,6 +231,80 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 4 Questions Command Center Matrix */}
+      <div className="rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900 to-indigo-950/40 p-5 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <Compass className="h-5 w-5 text-blue-400" />
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-wide">
+                4 Questions Command Center Intelligence Matrix
+              </h3>
+              <p className="text-[11px] text-slate-400">
+                Core operational framework for North Eastern logistics and emergency response
+              </p>
+            </div>
+          </div>
+          <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">
+            STRATEGIC COGNITION
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Question 1 */}
+          <div className="rounded-xl bg-slate-950/80 border border-blue-500/30 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold text-blue-400 uppercase tracking-wider">01. SITUATION</span>
+              <span className="text-xs">📡</span>
+            </div>
+            <h4 className="text-xs font-extrabold text-white">WHAT IS HAPPENING?</h4>
+            <div className="text-xs text-slate-300 space-y-1 leading-relaxed">
+              <p>• <span className="font-bold text-rose-400">23 Active Incidents</span> detected across 8 states (7 landslides, 5 floods, 4 bridge fissures).</p>
+              <p>• <span className="font-bold text-emerald-400">126 Vehicles</span> tracked live; 18 in transit, 5 delayed, 3 at-risk.</p>
+            </div>
+          </div>
+
+          {/* Question 2 */}
+          <div className="rounded-xl bg-slate-950/80 border border-amber-500/30 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider">02. LOCATION</span>
+              <span className="text-xs">🗺️</span>
+            </div>
+            <h4 className="text-xs font-extrabold text-white">WHERE IS IT HAPPENING?</h4>
+            <div className="text-xs text-slate-300 space-y-1 leading-relaxed">
+              <p>• <span className="font-bold text-amber-400">NH-13 Sela Pass</span> (Tawang, elevation 13,700ft) & NH-10 Teesta Corridor.</p>
+              <p>• Vulnerability Index: Tawang (74.5), Kohima (54.0), Cachar (48.2).</p>
+            </div>
+          </div>
+
+          {/* Question 3 */}
+          <div className="rounded-xl bg-slate-950/80 border border-purple-500/30 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold text-purple-400 uppercase tracking-wider">03. FORECAST</span>
+              <span className="text-xs">🔮</span>
+            </div>
+            <h4 className="text-xs font-extrabold text-white">WHAT WILL HAPPEN?</h4>
+            <div className="text-xs text-slate-300 space-y-1 leading-relaxed">
+              <p>• AI Weather: <span className="font-bold text-purple-300">+45mm rain</span> predicted in next 6-12h over Arunachal & Meghalaya.</p>
+              <p>• NH-13 risk score escalating to 85; 3 cold-chain medicine consignments at risk.</p>
+            </div>
+          </div>
+
+          {/* Question 4 */}
+          <div className="rounded-xl bg-slate-950/80 border border-emerald-500/30 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider">04. ACTION</span>
+              <span className="text-xs">⚡</span>
+            </div>
+            <h4 className="text-xs font-extrabold text-white">WHAT SHOULD WE DO?</h4>
+            <div className="text-xs text-slate-300 space-y-1 leading-relaxed">
+              <p>• Activate <span className="font-bold text-emerald-300">Southern Foothill Bypass</span> for heavy logistics convoy.</p>
+              <p>• Reroute DLV-NER-001 medicine convoy via NH-27 green lifeline corridor.</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -473,6 +552,70 @@ export const DashboardPage: React.FC = () => {
                 </Badge>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* System Impact Section (Demo Metrics — Simulated Data) */}
+      <div className="rounded-xl border border-emerald-500/30 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30 p-5 shadow-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
+          <div className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-emerald-400" />
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-wide">
+                System Impact & Operational Performance
+              </h3>
+              <p className="text-[11px] text-slate-400">
+                Demonstrated platform efficiency gains across North Eastern road transport corridors
+              </p>
+            </div>
+          </div>
+          <span className="font-mono text-[10px] px-2.5 py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 font-bold uppercase tracking-wider">
+            DEMO METRICS — SIMULATED DATA
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 text-center">
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Avg Delay Reduction</p>
+            <p className="text-base font-extrabold text-emerald-400 mt-1 font-mono">24 min</p>
+            <span className="text-[9px] text-emerald-500 font-semibold">(-28% delay)</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Route Efficiency</p>
+            <p className="text-base font-extrabold text-blue-400 mt-1 font-mono">+13%</p>
+            <span className="text-[9px] text-blue-400 font-semibold">Fuel & transit gain</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Medicine Reliability</p>
+            <p className="text-base font-extrabold text-rose-400 mt-1 font-mono">96%</p>
+            <span className="text-[9px] text-rose-400 font-semibold">Cold-chain uptime</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Agricultural Reliability</p>
+            <p className="text-base font-extrabold text-amber-400 mt-1 font-mono">92%</p>
+            <span className="text-[9px] text-amber-400 font-semibold">Produce shelf-life</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Accessibility Index</p>
+            <p className="text-base font-extrabold text-emerald-400 mt-1 font-mono">+14.2%</p>
+            <span className="text-[9px] text-emerald-500 font-semibold">All 8 states</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Response Time</p>
+            <p className="text-base font-extrabold text-indigo-400 mt-1 font-mono">-35 min</p>
+            <span className="text-[9px] text-indigo-400 font-semibold">Incident clearance</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+            <p className="text-[10px] text-slate-400 font-medium">Offline Sync Rate</p>
+            <p className="text-base font-extrabold text-teal-400 mt-1 font-mono">99.8%</p>
+            <span className="text-[9px] text-teal-400 font-semibold">Local queue verify</span>
           </div>
         </div>
       </div>

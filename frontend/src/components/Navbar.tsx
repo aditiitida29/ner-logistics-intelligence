@@ -12,7 +12,9 @@ import {
   Radio,
   User,
   ChevronDown,
-  Clock
+  Clock,
+  Navigation,
+  Film
 } from 'lucide-react';
 
 const REGIONS: Region[] = [
@@ -40,11 +42,19 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
     setIsSimulationActive,
     isDemoMode,
     isOffline,
+    setIsOffline,
     pendingOfflineCount,
     syncOfflineReports,
+    isOfflineQueueOpen,
+    setIsOfflineQueueOpen,
+    addToast,
     setIsSearchOpen,
     user,
-    setCurrentPage
+    setCurrentPage,
+    userLocation,
+    isLocating,
+    syncRealLocation,
+    setShowCinematicIntro
   } = useApp();
 
   const [currentTime, setCurrentTime] = useState<string>('');
@@ -178,27 +188,58 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
             <Globe className="h-3 w-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          {/* Offline Sync Status Badge */}
+          {/* Offline Sync Status Badge & Queue Trigger */}
           {isOffline ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs font-medium">
+            <button
+              onClick={() => setIsOfflineQueueOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-950/80 border border-rose-500/50 text-rose-300 text-xs font-semibold hover:bg-rose-900/80 transition shadow-sm animate-pulse"
+              title="Offline Mode Active — Click to view Offline Data Queue"
+            >
               <WifiOff className="h-3.5 w-3.5 text-rose-400" />
-              <span className="hidden sm:inline">{t('offlineMode')}</span>
-            </div>
+              <span>OFFLINE ({pendingOfflineCount} Queued)</span>
+            </button>
           ) : pendingOfflineCount > 0 ? (
             <button
-              onClick={syncOfflineReports}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-medium animate-pulse"
-              title="Click to synchronize offline incident reports"
+              onClick={() => setIsOfflineQueueOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-950/80 border border-amber-500/50 text-amber-300 text-xs font-semibold hover:bg-amber-900/80 transition animate-pulse"
+              title="Pending Offline Sync — Click to inspect and synchronize"
             >
               <Wifi className="h-3.5 w-3.5 text-amber-400" />
               <span>{pendingOfflineCount} Pending Sync</span>
             </button>
           ) : (
-            <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 text-xs" title="Connected to Central NER Data Hub">
+            <button
+              onClick={() => setIsOfflineQueueOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white hover:border-slate-700 transition"
+              title="Connected to Central Hub — Click to view offline queue"
+            >
               <Wifi className="h-3 w-3 text-emerald-400" />
               <span className="text-[11px]">Online</span>
-            </div>
+            </button>
           )}
+
+          {/* Offline Simulator Toggle Button */}
+          <button
+            onClick={() => {
+              const next = !isOffline;
+              setIsOffline(next);
+              if (next) {
+                addToast('Offline mode simulation ENABLED. Actions will queue locally.', 'warning');
+              } else {
+                addToast('Online mode RESTORED. Triggering automatic background sync...', 'success');
+                syncOfflineReports();
+              }
+            }}
+            className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
+              isOffline
+                ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 font-bold'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+            title="Toggle simulated offline state for hackathon evaluation"
+          >
+            <WifiOff className={`h-3.5 w-3.5 ${isOffline ? 'text-rose-400' : 'text-slate-500'}`} />
+            <span>Offline Sim: {isOffline ? 'ON' : 'OFF'}</span>
+          </button>
 
           {/* GPS Simulation Toggle Indicator */}
           <button
@@ -212,6 +253,48 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
           >
             <Radio className={`h-3.5 w-3.5 ${isSimulationActive ? 'text-blue-400 animate-pulse' : 'text-slate-500'}`} />
             <span>GPS Sim: {isSimulationActive ? 'ON' : 'OFF'}</span>
+          </button>
+
+          {/* Live Real Device GPS Sync Badge */}
+          {userLocation ? (
+            <button
+              onClick={() => syncRealLocation(true)}
+              disabled={isLocating}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-slate-200 hover:border-slate-700 transition group"
+              title="Physical Device GPS Active — Click to force re-acquisition"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+              </span>
+              <span className="text-slate-400 hidden lg:inline">GPS:</span>
+              <span className="text-emerald-400 font-bold">
+                {userLocation.latitude.toFixed(2)}°, {userLocation.longitude.toFixed(2)}°
+              </span>
+              <span className="text-[10px] text-slate-400 hidden xl:inline">
+                (±{userLocation.accuracy}m)
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={() => syncRealLocation(true)}
+              disabled={isLocating}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 hover:border-slate-700 hover:text-slate-100 transition"
+              title="Click to synchronize with real physical GPS coordinates"
+            >
+              <Navigation className={`h-3.5 w-3.5 ${isLocating ? 'animate-spin text-[#10B981]' : 'text-slate-400'}`} />
+              <span>{isLocating ? 'Acquiring...' : 'Sync GPS'}</span>
+            </button>
+          )}
+
+          {/* Replay Cinematic Opening Film Trigger */}
+          <button
+            onClick={() => setShowCinematicIntro(true)}
+            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-medium text-slate-300 hover:text-slate-100 hover:border-slate-700 transition"
+            title="Replay the cinematic opening animation"
+          >
+            <Film className="h-3.5 w-3.5 text-emerald-400" />
+            <span>Replay Film</span>
           </button>
 
           {/* Emergency Mode Button */}

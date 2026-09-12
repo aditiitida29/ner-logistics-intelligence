@@ -5,6 +5,7 @@ import { Sidebar } from './components/Sidebar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { OfflineQueueModal } from './components/OfflineQueueModal';
 import { ToastContainer } from './components/UI/Toast';
+import { CinematicIntro } from './components/CinematicIntro';
 
 // Pages
 import { LoginPage } from './pages/LoginPage';
@@ -22,7 +23,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { DriverPortalPage } from './pages/DriverPortalPage';
 
 const AppContent: React.FC = () => {
-  const { currentPage, isOfflineQueueOpen, setIsOfflineQueueOpen } = useApp();
+  const { currentPage, isOfflineQueueOpen, setIsOfflineQueueOpen, showCinematicIntro, setShowCinematicIntro } = useApp();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Render current page based on routing state
@@ -62,12 +63,17 @@ const AppContent: React.FC = () => {
   if (currentPage === 'login') {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+        {/* Cinematic Opening Animation */}
+        {showCinematicIntro && (
+          <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />
+        )}
+
         <Navbar onMenuToggle={() => setIsSidebarOpen(true)} />
         <main className="flex-1 flex items-center justify-center">
           <LoginPage />
         </main>
-        <footer className="py-4 border-t border-slate-900 bg-slate-950 text-center text-[11px] text-slate-500 font-mono">
-          NER Logistics Intelligence Platform • Smart India Hackathon 2026
+        <footer className="py-4 border-t border-slate-800 bg-slate-950 text-center text-[11px] text-slate-400 font-mono">
+          NER LOGISTICS • Northeast Route Intelligence • Smart India Hackathon 2026
         </footer>
         <ToastContainer />
       </div>
@@ -76,6 +82,11 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
+      {/* Cinematic Opening Animation (played on load/reload/open or replayed on demand) */}
+      {showCinematicIntro && (
+        <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />
+      )}
+
       {/* Sidebar (Persistent on Desktop, Drawer on Mobile) */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -88,11 +99,11 @@ const AppContent: React.FC = () => {
         </main>
 
         {/* Command Center Footer */}
-        <footer className="border-t border-slate-900 bg-slate-950/80 px-6 py-4 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <footer className="border-t border-slate-800 bg-slate-950/95 px-6 py-4 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span className="font-medium text-slate-400">
-              NER Logistics Intelligence Command Network
+            <span className="h-2 w-2 rounded-full bg-[#10B981]" />
+            <span className="font-medium text-slate-200">
+              NER Logistics Route Intelligence Command Network
             </span>
             <span>•</span>
             <span>All 8 North Eastern States Active</span>
@@ -100,7 +111,7 @@ const AppContent: React.FC = () => {
           <div className="flex items-center gap-4 text-[11px] font-mono">
             <span>Ministry of Development of North Eastern Region (MDoNER)</span>
             <span>•</span>
-            <span className="text-blue-400">SIH 2026</span>
+            <span className="text-emerald-400">SIH 2026</span>
           </div>
         </footer>
       </div>

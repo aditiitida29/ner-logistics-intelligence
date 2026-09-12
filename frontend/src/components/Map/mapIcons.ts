@@ -55,7 +55,7 @@ export const createDistrictIcon = (score: number) => {
   return L.divIcon({
     className: 'custom-district-marker',
     html: `
-      <div style="background-color: rgba(15, 23, 42, 0.9); border: 1.5px solid ${color}; border-radius: 6px; padding: 2px 6px; color: #F8FAFC; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 4px;">
+      <div style="background-color: rgba(25, 15, 9, 0.92); border: 1.5px solid ${color}; border-radius: 6px; padding: 2px 6px; color: #F8F2EA; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 4px;">
         <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${color};"></span>
         <span>${score.toFixed(0)}%</span>
       </div>
@@ -65,3 +65,20 @@ export const createDistrictIcon = (score: number) => {
     popupAnchor: [0, -10]
   });
 };
+
+export const createUserLocationIcon = () => {
+  return L.divIcon({
+    className: 'custom-user-location-marker',
+    html: `
+      <div class="relative flex items-center justify-center pulse-gps">
+        <div style="background-color: #3EB489; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #F8F2EA; display: flex; items-center; justify-content: center; box-shadow: 0 0 14px rgba(62, 180, 137, 0.95);">
+          <div style="width: 7px; height: 7px; border-radius: 50%; background-color: #FFFFFF;"></div>
+        </div>
+      </div>
+    `,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    popupAnchor: [0, -12]
+  });
+};
+

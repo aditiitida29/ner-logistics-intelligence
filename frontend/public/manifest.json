@@ -1,12 +1,12 @@
-﻿{
+{
   "name": "NER Logistics Intelligence",
   "short_name": "NER Logistics",
   "description": "AI-Powered Accessibility, Logistics & Emergency Response Platform for North Eastern Region (NER)",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#2563eb",
+  "background_color": "#190F09",
+  "theme_color": "#8E4A23",
   "orientation": "any",
   "categories": ["government", "productivity", "utilities", "navigation"],
   "icons": [

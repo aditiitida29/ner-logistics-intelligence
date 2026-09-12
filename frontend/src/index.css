@@ -9,61 +9,73 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #030712;
-  color: #f8fafc;
+  background-color: #190F09;
+  color: #F8F2EA;
   overflow-x: hidden;
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars in warm coffee and cream tones */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #190F09;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #3B281C;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #543928;
 }
 
-/* Leaflet map styles */
+/* Leaflet map styles with warm coffee brown and cream white theme */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background-color: #0f172a !important;
+  background-color: #190F09 !important;
   font-family: 'Inter', sans-serif !important;
   z-index: 10;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid #334155;
+  background: #251810 !important;
+  color: #F8F2EA !important;
+  border: 1px solid #3B281C;
   border-radius: 0.5rem !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
+  background: #251810 !important;
 }
 
 .leaflet-control-zoom-in, .leaflet-control-zoom-out {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
+  background-color: #251810 !important;
+  color: #F8F2EA !important;
+  border-color: #3B281C !important;
 }
 
 /* Pulsing radar dot for emergency & critical */
 @keyframes radar-pulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(224, 93, 82, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(224, 93, 82, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(224, 93, 82, 0); }
 }
 
 .pulse-radar {
   animation: radar-pulse 2s infinite;
 }
+
+/* Pulsing GPS beacon for real physical user location */
+@keyframes gps-pulse {
+  0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(62, 180, 137, 0.7); }
+  70% { transform: scale(1.08); box-shadow: 0 0 0 14px rgba(62, 180, 137, 0); }
+  100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(62, 180, 137, 0); }
+}
+
+.pulse-gps {
+  animation: gps-pulse 2.2s infinite ease-out;
+}
+
