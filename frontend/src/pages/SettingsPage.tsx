@@ -77,9 +77,9 @@ export const SettingsPage: React.FC = () => {
       description: 'Clean, high-brightness interface with pure white cards and deep slate typography. Optimized for bright daylight operations and high-glare environments.',
       icon: Sun,
       colorPreview: {
-        bg: '#F8FAFC',
+        bg: '#F1F5F9',
         card: '#FFFFFF',
-        border: '#CBD5E1',
+        border: '#E2E8F0',
         text: '#0F172A',
         accent: '#2563EB'
       }
@@ -93,8 +93,8 @@ export const SettingsPage: React.FC = () => {
       icon: Moon,
       colorPreview: {
         bg: '#0B0F19',
-        card: '#111827',
-        border: '#1F2937',
+        card: '#131D31',
+        border: '#22314D',
         text: '#F3F4F6',
         accent: '#3B82F6'
       }
@@ -108,10 +108,10 @@ export const SettingsPage: React.FC = () => {
       icon: BookOpen,
       colorPreview: {
         bg: '#F5E8D8',
-        card: '#FCF7F0',
-        border: '#DAC6AE',
+        card: '#FFFDF9',
+        border: '#D4BEA7',
         text: '#2C1A0D',
-        accent: '#8E4A23'
+        accent: '#B45309'
       }
     },
     {
@@ -123,7 +123,7 @@ export const SettingsPage: React.FC = () => {
       icon: Contrast,
       colorPreview: {
         bg: '#000000',
-        card: '#0A0A0A',
+        card: '#202020',
         border: '#FFFFFF',
         text: '#FFFFFF',
         accent: '#FFE600'
@@ -138,7 +138,7 @@ export const SettingsPage: React.FC = () => {
       icon: Zap,
       colorPreview: {
         bg: '#05070E',
-        card: '#0A0E1A',
+        card: '#0E172F',
         border: '#00F0FF',
         text: '#00F0FF',
         accent: '#FF007F'

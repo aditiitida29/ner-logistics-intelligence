@@ -14,9 +14,9 @@
   --color-slate-500: 107 114 128;
   --color-slate-600: 75 85 99;
   --color-slate-700: 55 65 81;
-  --color-slate-800: 31 41 55;
-  --color-slate-850: 22 32 48;
-  --color-slate-900: 17 24 39;
+  --color-slate-800: 34 49 77;
+  --color-slate-850: 22 34 56;
+  --color-slate-900: 19 29 49;
   --color-slate-950: 11 15 25;
 
   --color-blue-50: 15 23 42;
@@ -32,29 +32,29 @@
   --color-blue-950: 10 18 30;
 }
 
-/* Light Theme: Crisp Clean Daylight & Pristine White Surfaces */
+/* Light Theme: Crisp Clean Daylight & Pristine White Card Surfaces */
 [data-theme="light"] {
   color-scheme: light;
   --theme-name: 'light';
   --color-text-white: 15 23 42;
-  --color-slate-50: 2 6 23;
-  --color-slate-100: 15 23 42;
-  --color-slate-200: 30 41 59;
-  --color-slate-300: 51 65 85;
-  --color-slate-400: 71 85 105;
-  --color-slate-500: 100 116 139;
-  --color-slate-600: 148 163 184;
-  --color-slate-700: 203 213 225;
+  --color-slate-50: 15 23 42;
+  --color-slate-100: 30 41 59;
+  --color-slate-200: 51 65 85;
+  --color-slate-300: 71 85 105;
+  --color-slate-400: 100 116 139;
+  --color-slate-500: 148 163 184;
+  --color-slate-600: 203 213 225;
+  --color-slate-700: 226 232 240;
   --color-slate-800: 226 232 240;
   --color-slate-850: 241 245 249;
   --color-slate-900: 255 255 255;
-  --color-slate-950: 248 250 252;
+  --color-slate-950: 241 245 249;
 
   --color-blue-50: 239 246 255;
   --color-blue-100: 219 234 254;
   --color-blue-200: 191 219 254;
   --color-blue-300: 147 197 253;
-  --color-blue-400: 29 78 216;
+  --color-blue-400: 37 99 235;
   --color-blue-500: 37 99 235;
   --color-blue-600: 37 99 235;
   --color-blue-700: 29 78 216;
@@ -68,30 +68,30 @@
   color-scheme: light;
   --theme-name: 'sepia';
   --color-text-white: 44 26 13;
-  --color-slate-50: 28 15 6;
+  --color-slate-50: 44 26 13;
   --color-slate-100: 44 26 13;
-  --color-slate-200: 62 40 22;
-  --color-slate-300: 84 57 34;
-  --color-slate-400: 112 80 52;
-  --color-slate-500: 138 104 74;
-  --color-slate-600: 164 136 106;
-  --color-slate-700: 196 172 144;
-  --color-slate-800: 218 198 174;
-  --color-slate-850: 238 222 202;
-  --color-slate-900: 252 247 240;
-  --color-slate-950: 245 232 216; /* Exact #F5E8D8 background */
+  --color-slate-200: 68 44 24;
+  --color-slate-300: 92 64 39;
+  --color-slate-400: 120 90 62;
+  --color-slate-500: 154 122 92;
+  --color-slate-600: 185 156 126;
+  --color-slate-700: 205 180 152;
+  --color-slate-800: 212 190 167;
+  --color-slate-850: 234 219 199;
+  --color-slate-900: 255 253 249; /* Distinct warm ivory parchment card box */
+  --color-slate-950: 245 232 216; /* Exact #F5E8D8 specified aged paper background */
 
-  --color-blue-50: 250 243 236;
-  --color-blue-100: 246 228 213;
-  --color-blue-200: 236 194 161;
-  --color-blue-300: 224 158 110;
-  --color-blue-400: 198 120 69;
-  --color-blue-500: 168 90 45;
-  --color-blue-600: 142 74 35;
-  --color-blue-700: 111 59 29;
-  --color-blue-800: 76 41 21;
-  --color-blue-900: 246 228 213;
-  --color-blue-950: 250 243 236;
+  --color-blue-50: 252 248 242;
+  --color-blue-100: 246 235 222;
+  --color-blue-200: 235 210 186;
+  --color-blue-300: 217 166 123;
+  --color-blue-400: 194 94 0;
+  --color-blue-500: 180 83 9;
+  --color-blue-600: 180 83 9;
+  --color-blue-700: 154 52 18;
+  --color-blue-800: 124 45 18;
+  --color-blue-900: 246 235 222;
+  --color-blue-950: 252 248 242;
 }
 
 /* High Contrast: Pitch Black & Pure White Borders for Maximal Visual Accessibility */
@@ -104,20 +104,20 @@
   --color-slate-200: 255 255 255;
   --color-slate-300: 245 245 245;
   --color-slate-400: 230 230 230;
-  --color-slate-500: 210 210 210;
+  --color-slate-500: 200 200 200;
   --color-slate-600: 180 180 180;
   --color-slate-700: 255 255 255;
   --color-slate-800: 255 255 255;
-  --color-slate-850: 20 20 20;
-  --color-slate-900: 10 10 10;
-  --color-slate-950: 0 0 0;
+  --color-slate-850: 24 24 24;
+  --color-slate-900: 32 32 32;     /* Solid distinct charcoal surface */
+  --color-slate-950: 0 0 0;        /* Pitch black background */
 
   --color-blue-50: 0 0 0;
   --color-blue-100: 20 20 20;
   --color-blue-200: 40 40 40;
   --color-blue-300: 255 255 0;
   --color-blue-400: 255 255 0;
-  --color-blue-500: 255 240 50;
+  --color-blue-500: 255 230 0;
   --color-blue-600: 255 230 0;
   --color-blue-700: 230 200 0;
   --color-blue-800: 255 255 255;
@@ -131,29 +131,29 @@
   --theme-name: 'neon';
   --color-text-white: 255 255 255;
   --color-slate-50: 255 255 255;
-  --color-slate-100: 255 255 255;
-  --color-slate-200: 240 250 255;
-  --color-slate-300: 220 240 255;
+  --color-slate-100: 240 250 255;
+  --color-slate-200: 220 240 255;
+  --color-slate-300: 180 220 255;
   --color-slate-400: 0 240 255;
-  --color-slate-500: 0 220 255;
+  --color-slate-500: 0 210 255;
   --color-slate-600: 57 255 20;
   --color-slate-700: 255 0 127;
   --color-slate-800: 0 240 255;
-  --color-slate-850: 16 22 40;
-  --color-slate-900: 10 14 26;
-  --color-slate-950: 5 7 14;
+  --color-slate-850: 16 24 50;
+  --color-slate-900: 14 23 47;     /* Distinct luminous cyber-indigo box surface */
+  --color-slate-950: 5 7 14;       /* Deep void canvas */
 
-  --color-blue-50: 10 5 16;
-  --color-blue-100: 25 10 35;
-  --color-blue-200: 45 15 60;
+  --color-blue-50: 10 5 18;
+  --color-blue-100: 25 10 38;
+  --color-blue-200: 45 15 65;
   --color-blue-300: 57 255 20;
   --color-blue-400: 0 240 255;
   --color-blue-500: 0 240 255;
   --color-blue-600: 255 0 127;
   --color-blue-700: 210 0 100;
   --color-blue-800: 0 240 255;
-  --color-blue-900: 25 10 35;
-  --color-blue-950: 10 5 16;
+  --color-blue-900: 25 10 38;
+  --color-blue-950: 10 5 18;
 }
 
 body {
@@ -230,7 +230,251 @@ body {
   animation: gps-pulse 2.2s infinite ease-out;
 }
 
-/* Button contrast rules in light and sepia themes */
+/* ========================================================================= */
+/* THEME-SPECIFIC BOX, CARD & CONTAINER STYLING RULES                        */
+/* Ensures box backgrounds visibly, boldly transform across every theme     */
+/* ========================================================================= */
+
+/* --- SEPIA THEME: Warm Ivory Parchment Cards on #F5E8D8 Aged Paper --- */
+[data-theme="sepia"] .bg-slate-900,
+[data-theme="sepia"] .bg-slate-900\/95,
+[data-theme="sepia"] .bg-slate-900\/90,
+[data-theme="sepia"] .bg-slate-900\/80,
+[data-theme="sepia"] .bg-slate-900\/70,
+[data-theme="sepia"] .bg-slate-900\/60,
+[data-theme="sepia"] .bg-slate-900\/50,
+[data-theme="sepia"] .leaflet-popup-content-wrapper,
+[data-theme="sepia"] .leaflet-popup-tip {
+  background-color: #FFFDF9 !important;
+  border-color: #D4BEA7 !important;
+  box-shadow: 0 4px 18px -2px rgba(107, 74, 45, 0.12), 0 2px 6px -1px rgba(107, 74, 45, 0.08) !important;
+}
+
+[data-theme="sepia"] .bg-slate-950,
+[data-theme="sepia"] .bg-slate-950\/90,
+[data-theme="sepia"] .bg-slate-950\/80,
+[data-theme="sepia"] .bg-slate-950\/70 {
+  background-color: #EADBC7 !important;
+  border-color: #CDB498 !important;
+}
+
+[data-theme="sepia"] input,
+[data-theme="sepia"] select,
+[data-theme="sepia"] textarea {
+  background-color: #EADBC7 !important;
+  border-color: #CDB498 !important;
+  color: #2C1A0D !important;
+}
+
+[data-theme="sepia"] .kpi-card {
+  background: linear-gradient(135deg, #FFFDF9 0%, #F5E8D8 100%) !important;
+  border-color: #D4BEA7 !important;
+  box-shadow: 0 4px 16px -2px rgba(107, 74, 45, 0.12) !important;
+}
+[data-theme="sepia"] .kpi-emerald {
+  background: linear-gradient(135deg, #FFFDF9 0%, #E6F4EA 100%) !important;
+  border-color: #A7D7B5 !important;
+}
+[data-theme="sepia"] .kpi-amber {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FDF2E2 100%) !important;
+  border-color: #E8CA9F !important;
+}
+[data-theme="sepia"] .kpi-rose {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FCE7E5 100%) !important;
+  border-color: #EBB6B1 !important;
+}
+[data-theme="sepia"] .kpi-blue,
+[data-theme="sepia"] .kpi-indigo {
+  background: linear-gradient(135deg, #FFFDF9 0%, #EDE4D8 100%) !important;
+  border-color: #D2BA9F !important;
+}
+
+/* --- NEON / CYBERPUNK THEME: Luminous Cyber-Indigo Boxes with Neon Highlights --- */
+[data-theme="neon"] .bg-slate-900,
+[data-theme="neon"] .bg-slate-900\/95,
+[data-theme="neon"] .bg-slate-900\/90,
+[data-theme="neon"] .bg-slate-900\/80,
+[data-theme="neon"] .bg-slate-900\/70,
+[data-theme="neon"] .bg-slate-900\/60,
+[data-theme="neon"] .bg-slate-900\/50,
+[data-theme="neon"] .leaflet-popup-content-wrapper,
+[data-theme="neon"] .leaflet-popup-tip {
+  background-color: #0E172F !important;
+  background-image: linear-gradient(145deg, rgba(16, 26, 56, 0.98) 0%, rgba(28, 14, 48, 0.98) 100%) !important;
+  border-color: rgba(0, 240, 255, 0.45) !important;
+  box-shadow: 0 4px 24px rgba(0, 240, 255, 0.12), inset 0 1px 0 rgba(0, 240, 255, 0.25) !important;
+}
+
+[data-theme="neon"] .bg-slate-950,
+[data-theme="neon"] .bg-slate-950\/90,
+[data-theme="neon"] .bg-slate-950\/80,
+[data-theme="neon"] .bg-slate-950\/70 {
+  background-color: #070B18 !important;
+  border-color: rgba(255, 0, 127, 0.45) !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="neon"] input,
+[data-theme="neon"] select,
+[data-theme="neon"] textarea {
+  background-color: #070B18 !important;
+  border-color: rgba(0, 240, 255, 0.5) !important;
+  color: #FFFFFF !important;
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.15) !important;
+}
+
+[data-theme="neon"] .border-slate-800 {
+  border-color: rgba(0, 240, 255, 0.4) !important;
+}
+
+[data-theme="neon"] .kpi-card {
+  background: linear-gradient(135deg, #0E172F 0%, rgba(0, 240, 255, 0.15) 100%) !important;
+  border-color: rgba(0, 240, 255, 0.6) !important;
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.2), inset 0 1px 0 rgba(0, 240, 255, 0.3) !important;
+}
+[data-theme="neon"] .kpi-emerald {
+  background: linear-gradient(135deg, #0E172F 0%, rgba(57, 255, 20, 0.18) 100%) !important;
+  border-color: rgba(57, 255, 20, 0.6) !important;
+  box-shadow: 0 0 18px rgba(57, 255, 20, 0.2), inset 0 1px 0 rgba(57, 255, 20, 0.3) !important;
+}
+[data-theme="neon"] .kpi-amber {
+  background: linear-gradient(135deg, #0E172F 0%, rgba(255, 190, 0, 0.18) 100%) !important;
+  border-color: rgba(255, 190, 0, 0.6) !important;
+  box-shadow: 0 0 18px rgba(255, 190, 0, 0.2), inset 0 1px 0 rgba(255, 190, 0, 0.3) !important;
+}
+[data-theme="neon"] .kpi-rose {
+  background: linear-gradient(135deg, #0E172F 0%, rgba(255, 0, 127, 0.2) 100%) !important;
+  border-color: rgba(255, 0, 127, 0.6) !important;
+  box-shadow: 0 0 18px rgba(255, 0, 127, 0.25), inset 0 1px 0 rgba(255, 0, 127, 0.3) !important;
+}
+[data-theme="neon"] .kpi-blue,
+[data-theme="neon"] .kpi-indigo {
+  background: linear-gradient(135deg, #0E172F 0%, rgba(0, 240, 255, 0.2) 100%) !important;
+  border-color: rgba(0, 240, 255, 0.6) !important;
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.3) !important;
+}
+
+/* --- HIGH CONTRAST THEME: Solid Charcoal #202020 Surfaces with Thick 2px White Borders --- */
+[data-theme="high-contrast"] .bg-slate-900,
+[data-theme="high-contrast"] .bg-slate-900\/95,
+[data-theme="high-contrast"] .bg-slate-900\/90,
+[data-theme="high-contrast"] .bg-slate-900\/80,
+[data-theme="high-contrast"] .bg-slate-900\/70,
+[data-theme="high-contrast"] .bg-slate-900\/60,
+[data-theme="high-contrast"] .bg-slate-900\/50,
+[data-theme="high-contrast"] .leaflet-popup-content-wrapper,
+[data-theme="high-contrast"] .leaflet-popup-tip {
+  background-color: #202020 !important;
+  border: 2px solid #FFFFFF !important;
+  box-shadow: 0 0 0 1px #000000, 0 4px 14px rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="high-contrast"] .bg-slate-950,
+[data-theme="high-contrast"] .bg-slate-950\/90,
+[data-theme="high-contrast"] .bg-slate-950\/80,
+[data-theme="high-contrast"] .bg-slate-950\/70 {
+  background-color: #0D0D0D !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+[data-theme="high-contrast"] input,
+[data-theme="high-contrast"] select,
+[data-theme="high-contrast"] textarea {
+  background-color: #0D0D0D !important;
+  border: 2px solid #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="high-contrast"] .border-slate-800,
+[data-theme="high-contrast"] .border-slate-700 {
+  border-color: #FFFFFF !important;
+  border-width: 2px !important;
+}
+
+[data-theme="high-contrast"] .kpi-card {
+  background: #202020 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+[data-theme="high-contrast"] button[class*="bg-blue-600"] {
+  background-color: #FFE600 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+[data-theme="high-contrast"] button[class*="bg-blue-600"] * {
+  color: #000000 !important;
+}
+
+/* --- LIGHT THEME: Brilliant White #FFFFFF Cards with Clean Slate Borders --- */
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-slate-900\/95,
+[data-theme="light"] .bg-slate-900\/90,
+[data-theme="light"] .bg-slate-900\/80,
+[data-theme="light"] .bg-slate-900\/70,
+[data-theme="light"] .bg-slate-900\/60,
+[data-theme="light"] .bg-slate-900\/50,
+[data-theme="light"] .leaflet-popup-content-wrapper,
+[data-theme="light"] .leaflet-popup-tip {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+}
+
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-slate-950\/90,
+[data-theme="light"] .bg-slate-950\/80,
+[data-theme="light"] .bg-slate-950\/70 {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+[data-theme="light"] .kpi-card {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06) !important;
+}
+[data-theme="light"] .kpi-emerald {
+  background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%) !important;
+  border-color: #A7F3D0 !important;
+}
+[data-theme="light"] .kpi-amber {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%) !important;
+  border-color: #FDE68A !important;
+}
+[data-theme="light"] .kpi-rose {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF1F2 100%) !important;
+  border-color: #FECDD3 !important;
+}
+[data-theme="light"] .kpi-blue,
+[data-theme="light"] .kpi-indigo {
+  background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%) !important;
+  border-color: #BFDBFE !important;
+}
+
+/* --- DARK THEME: Tactical Command Center Navy Slate --- */
+[data-theme="dark"] .bg-slate-900,
+[data-theme="dark"] .bg-slate-900\/95,
+[data-theme="dark"] .bg-slate-900\/90,
+[data-theme="dark"] .bg-slate-900\/80 {
+  background-color: #131D31;
+  border-color: #22314D;
+}
+[data-theme="dark"] .bg-slate-950 {
+  background-color: #0D1524;
+  border-color: #1E2D47;
+}
+
+/* --- Theme-Aware Button Contrast Rules --- */
 [data-theme="light"] button[class*="bg-blue-600"],
 [data-theme="light"] button[class*="bg-rose-600"],
 [data-theme="light"] button[class*="bg-emerald-600"],
@@ -248,38 +492,35 @@ body {
   color: #FFFFFF !important;
 }
 
-/* High Contrast Theme Enhancements */
-[data-theme="high-contrast"] .border-slate-800,
-[data-theme="high-contrast"] .border-slate-700 {
-  border-color: #FFFFFF !important;
-  border-width: 1.5px !important;
+/* --- Theme-Aware Hover States --- */
+[data-theme="sepia"] .hover\:bg-slate-800:hover,
+[data-theme="sepia"] .hover\:bg-slate-900:hover {
+  background-color: #E8D7C2 !important;
 }
 
-[data-theme="high-contrast"] button[class*="bg-blue-600"] {
-  background-color: #FFE600 !important;
-  color: #000000 !important;
-  font-weight: 800 !important;
-  border: 2px solid #FFFFFF !important;
+[data-theme="light"] .hover\:bg-slate-800:hover,
+[data-theme="light"] .hover\:bg-slate-900:hover {
+  background-color: #F1F5F9 !important;
 }
 
-[data-theme="high-contrast"] button[class*="bg-blue-600"] * {
-  color: #000000 !important;
+[data-theme="high-contrast"] .hover\:bg-slate-800:hover,
+[data-theme="high-contrast"] .hover\:bg-slate-900:hover {
+  background-color: #333333 !important;
 }
 
-/* Neon / Cyberpunk Theme Glow & Highlights */
-[data-theme="neon"] .border-slate-800 {
-  border-color: rgba(0, 240, 255, 0.4) !important;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+[data-theme="neon"] .hover\:bg-slate-800:hover,
+[data-theme="neon"] .hover\:bg-slate-900:hover {
+  background-color: #141F3C !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
 }
-
-[data-theme="neon"] .border-slate-800:hover {
-  border-color: rgba(255, 0, 127, 0.6) !important;
-  box-shadow: 0 0 14px rgba(255, 0, 127, 0.3);
+[data-theme="neon"] .hover\:border-slate-700:hover {
+  border-color: rgba(255, 0, 127, 0.7) !important;
+  box-shadow: 0 0 14px rgba(255, 0, 127, 0.3) !important;
 }
-
 [data-theme="neon"] button[class*="bg-blue-600"] {
   box-shadow: 0 0 15px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(0, 240, 255, 0.3);
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
+
 
 

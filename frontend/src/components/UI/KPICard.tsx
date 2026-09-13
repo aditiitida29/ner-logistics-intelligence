@@ -43,7 +43,7 @@ export const KPICard: React.FC<KPICardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`rounded-xl border p-4 sm:p-5 transition-all duration-200 shadow-lg backdrop-blur-sm ${borderStyles[variant]} ${onClick ? 'cursor-pointer transform hover:-translate-y-0.5' : ''}`}
+      className={`kpi-card kpi-${variant} rounded-xl border p-4 sm:p-5 transition-all duration-200 shadow-lg backdrop-blur-sm ${borderStyles[variant]} ${onClick ? 'cursor-pointer transform hover:-translate-y-0.5' : ''}`}
     >
       <div className="flex items-start justify-between">
         <div>

@@ -663,36 +663,36 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
           {/* STEP 1: DEVICE LOCATION ACCESS WINDOW                                 */}
           {/* ===================================================================== */}
           {introStep === 'location' && (
-            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
-              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900/95 border border-slate-800 p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-slate-800">
                 <div className="h-10 w-10 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#34D399] shrink-0 mt-0.5">
                   <MapPin className="h-5 w-5 animate-pulse" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                    <h3 className="text-sm font-bold text-white">
                       Grant Location Access
                     </h3>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#10B981]/15 text-[#34D399] border border-[#10B981]/30">
                       Step 1 of 3
                     </span>
                   </div>
-                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                     Allow access to your exact physical location to calculate real-time landslide reroutes, localized terrain warnings, and immediate weather telemetry in Northeast India.
                   </p>
                 </div>
               </div>
 
               {/* Location Status Preview */}
-              <div className="p-3 rounded-xl bg-[#190F09] border border-[#3B281C] flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-slate-300 shrink-0">
                   <Navigation className="h-4 w-4 text-[#34D399]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-semibold text-[#F8F2EA]">
+                  <div className="text-[11px] font-semibold text-white">
                     {userLocation ? 'Exact Location Synchronized' : 'Physical GPS Coordinates'}
                   </div>
-                  <div className="text-[10px] text-[#DAC0A9]/70 font-mono truncate">
+                  <div className="text-[10px] text-slate-400 font-mono truncate">
                     {userLocation
                       ? `${userLocation.latitude.toFixed(4)}°N, ${userLocation.longitude.toFixed(4)}°E (±${userLocation.accuracy}m)`
                       : isLocating
@@ -723,7 +723,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                 <button
                   type="button"
                   onClick={handleSkipLocation}
-                  className="w-full py-2 px-3 rounded-xl bg-transparent hover:bg-[#190F09] text-[#DAC0A9] hover:text-[#F8F2EA] text-xs font-medium transition flex items-center justify-center gap-1 cursor-pointer border border-transparent hover:border-[#3B281C]"
+                  className="w-full py-2 px-3 rounded-xl bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-medium transition flex items-center justify-center gap-1 cursor-pointer border border-transparent hover:border-slate-700"
                 >
                   Skip & Continue with Default Region (Guwahati)
                 </button>
@@ -735,21 +735,21 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
           {/* STEP 2: ROLE SELECTION WINDOW (NORMAL_USER vs SUPER_ADMIN)            */}
           {/* ===================================================================== */}
           {introStep === 'role' && (
-            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
-              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900/95 border border-slate-800 p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-slate-800">
                 <div className="h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
                   <Shield className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                    <h3 className="text-sm font-bold text-white">
                       Select Your Role
                     </h3>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
                       Step 2 of 3
                     </span>
                   </div>
-                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                     Choose whether you are accessing the network as a public commuter or an administrative authority:
                   </p>
                 </div>
@@ -764,7 +764,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                   className={`w-full p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-start gap-3.5 group ${
                     selectedRole === 'normal_user'
                       ? 'bg-emerald-950/40 border-emerald-500/60 ring-1 ring-emerald-500/40 shadow-lg shadow-emerald-950/50'
-                      : 'bg-[#190F09] border-[#3B281C] hover:border-emerald-500/40 hover:bg-[#1f130c]'
+                      : 'bg-slate-950 border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900'
                   }`}
                 >
                   <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
@@ -772,18 +772,18 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#F8F2EA] group-hover:text-emerald-300 transition">
+                      <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition">
                         NORMAL_USER
                       </span>
                       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                         Citizen / Commuter
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#DAC0A9] mt-1 leading-relaxed">
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
                       Live landslide alerts, GIS interactive road status, verified clearance updates, and safe commuter bypass routing.
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-[#DAC0A9]/60 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
+                  <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
                 </button>
 
                 {/* SUPER_ADMIN Card */}
@@ -793,7 +793,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                   className={`w-full p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-start gap-3.5 group ${
                     selectedRole === 'super_admin'
                       ? 'bg-blue-950/40 border-blue-500/60 ring-1 ring-blue-500/40 shadow-lg shadow-blue-950/50'
-                      : 'bg-[#190F09] border-[#3B281C] hover:border-blue-500/40 hover:bg-[#1f130c]'
+                      : 'bg-slate-950 border-slate-800 hover:border-blue-500/40 hover:bg-slate-900'
                   }`}
                 >
                   <div className="h-10 w-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-105 transition-transform">
@@ -801,31 +801,31 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#F8F2EA] group-hover:text-blue-300 transition">
+                      <span className="text-xs font-bold text-white group-hover:text-blue-300 transition">
                         SUPER_ADMIN
                       </span>
                       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
                         Command Center
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#DAC0A9] mt-1 leading-relaxed">
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
                       Full incident management: report landslides, publish emergency alerts, clear routes, and oversee interstate logistics.
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-[#DAC0A9]/60 group-hover:text-blue-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
+                  <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
                 </button>
               </div>
 
               {/* Navigation Footer */}
-              <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
+              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                 <button
                   type="button"
                   onClick={() => setIntroStep('location')}
-                  className="text-[#DAC0A9]/80 hover:text-[#F8F2EA] flex items-center gap-1 transition cursor-pointer"
+                  className="text-slate-400 hover:text-white flex items-center gap-1 transition cursor-pointer"
                 >
                   <ArrowLeft className="h-3 w-3" /> Back to Location
                 </button>
-                <span className="text-[10px] text-[#DAC0A9]/50">Click role to proceed</span>
+                <span className="text-[10px] text-slate-500">Click role to proceed</span>
               </div>
             </div>
           )}
@@ -834,8 +834,8 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
           {/* STEP 3: MAIL ID & PASSWORD LOGIN WINDOW                               */}
           {/* ===================================================================== */}
           {introStep === 'login' && (
-            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
-              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+            <div className="w-full max-w-md rounded-2xl bg-slate-900/95 border border-slate-800 p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-slate-800">
                 <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
                   selectedRole === 'super_admin'
                     ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400'
@@ -845,31 +845,31 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                    <h3 className="text-sm font-bold text-white">
                       {selectedRole === 'super_admin' ? 'Super Admin Authentication' : 'Normal User Authentication'}
                     </h3>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#10B981]/15 text-[#34D399] border border-[#10B981]/30">
                       Step 3 of 3
                     </span>
                   </div>
-                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
-                    Enter your credentials for role <span className="font-bold text-[#F8F2EA] uppercase">{selectedRole}</span>:
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                    Enter your credentials for role <span className="font-bold text-white uppercase">{selectedRole}</span>:
                   </p>
                 </div>
               </div>
 
               {/* Selected Role Badge with Quick Change Option */}
-              <div className="p-2.5 rounded-xl bg-[#190F09] border border-[#3B281C] flex items-center justify-between">
+              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className={`h-2 w-2 rounded-full ${selectedRole === 'super_admin' ? 'bg-blue-400 animate-pulse' : 'bg-emerald-400 animate-pulse'}`} />
-                  <span className="text-xs font-semibold text-[#F8F2EA]">
-                    Active Role: <span className="font-mono text-[11px] text-[#A7F3D0]">{selectedRole === 'super_admin' ? 'SUPER_ADMIN' : 'NORMAL_USER'}</span>
+                  <span className="text-xs font-semibold text-white">
+                    Active Role: <span className="font-mono text-[11px] text-emerald-400">{selectedRole === 'super_admin' ? 'SUPER_ADMIN' : 'NORMAL_USER'}</span>
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIntroStep('role')}
-                  className="text-[11px] text-[#DAC0A9] hover:text-[#F8F2EA] underline cursor-pointer"
+                  className="text-[11px] text-slate-400 hover:text-white underline cursor-pointer"
                 >
                   Change Role
                 </button>
@@ -885,7 +885,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                 )}
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                  <label className="block text-[11px] font-medium text-slate-300 mb-1">
                     Mail ID / Official Email
                   </label>
                   <div className="relative">
@@ -895,14 +895,14 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@nerlogistics.gov.in"
-                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
                     />
-                    <Mail className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <Mail className="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                  <label className="block text-[11px] font-medium text-slate-300 mb-1">
                     Password
                   </label>
                   <div className="relative">
@@ -912,9 +912,9 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
                     />
-                    <Lock className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <Lock className="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                   </div>
                 </div>
 
@@ -929,11 +929,11 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
               </form>
 
               {/* Navigation Options */}
-              <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
+              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                 <button
                   type="button"
                   onClick={() => setIntroStep('role')}
-                  className="text-[#DAC0A9]/80 hover:text-[#F8F2EA] flex items-center gap-1 transition cursor-pointer"
+                  className="text-slate-400 hover:text-white flex items-center gap-1 transition cursor-pointer"
                 >
                   <ArrowLeft className="h-3 w-3" /> Back
                 </button>
