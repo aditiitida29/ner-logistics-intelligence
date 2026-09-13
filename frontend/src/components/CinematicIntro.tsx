@@ -12,6 +12,9 @@ import {
   Mail,
   Lock,
   ArrowRight,
+  ArrowLeft,
+  ChevronRight,
+  User,
   AlertCircle
 } from 'lucide-react';
 
@@ -23,7 +26,9 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
   const { userLocation, syncRealLocation, isLocating, setUser, setCurrentPage, addToast } = useApp();
   const [elapsed, setElapsed] = useState<number>(0);
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>('admin@nerlogistics.gov.in');
+  const [introStep, setIntroStep] = useState<'location' | 'role' | 'login'>('location');
+  const [selectedRole, setSelectedRole] = useState<'normal_user' | 'super_admin'>('normal_user');
+  const [email, setEmail] = useState<string>('citizen@nerlogistics.gov.in');
   const [password, setPassword] = useState<string>('admin123');
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -83,6 +88,28 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     setCurrentPage('user-dashboard');
     setIsFadingOut(true);
     setTimeout(onComplete, 400);
+  };
+
+  const handleAllowLocation = async () => {
+    await syncRealLocation(true);
+    setIntroStep('role');
+  };
+
+  const handleSkipLocation = () => {
+    setIntroStep('role');
+  };
+
+  const handleSelectRole = (role: 'normal_user' | 'super_admin') => {
+    setSelectedRole(role);
+    if (role === 'normal_user') {
+      setEmail('citizen@nerlogistics.gov.in');
+      setPassword('admin123');
+    } else {
+      setEmail('admin@nerlogistics.gov.in');
+      setPassword('admin123');
+    }
+    setLoginError(null);
+    setIntroStep('login');
   };
 
   // Atmospheric Monsoon Rain Canvas
@@ -623,126 +650,303 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
             <p className="mt-2 text-sm sm:text-base font-medium tracking-[0.2em] text-[#A7F3D0] italic">
               Northeast Route Intelligence
             </p>
-          </div>
 
-          {/* Small Login Popup Window */}
-          <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
-            <div className="flex items-start gap-3 pb-2 border-b border-[#3B281C]">
-              <div className="h-10 w-10 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#34D399] shrink-0 mt-0.5">
-                <Lock className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-bold text-[#F8F2EA]">
-                  Portal Sign In
-                </h3>
-                <p className="text-xs text-[#DAC0A9] mt-0.5 leading-relaxed">
-                  Enter your mail ID and password to access the command network:
-                </p>
-              </div>
-            </div>
-
-            {/* Quick 1-Click Role Fillers */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('admin@nerlogistics.gov.in');
-                  setPassword('admin123');
-                  setLoginError(null);
-                }}
-                className={`flex-1 py-1.5 px-2.5 rounded-lg border text-left transition flex items-center justify-between ${
-                  email === 'admin@nerlogistics.gov.in'
-                    ? 'bg-blue-950/60 border-blue-500/60 text-blue-300'
-                    : 'bg-[#190F09] border-[#3B281C] text-[#DAC0A9] hover:border-slate-600'
-                }`}
-              >
-                <span className="text-[11px] font-bold">Super Admin</span>
-                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono">Full</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('citizen@nerlogistics.gov.in');
-                  setPassword('admin123');
-                  setLoginError(null);
-                }}
-                className={`flex-1 py-1.5 px-2.5 rounded-lg border text-left transition flex items-center justify-between ${
-                  email === 'citizen@nerlogistics.gov.in'
-                    ? 'bg-emerald-950/60 border-emerald-500/60 text-emerald-300'
-                    : 'bg-[#190F09] border-[#3B281C] text-[#DAC0A9] hover:border-slate-600'
-                }`}
-              >
-                <span className="text-[11px] font-bold">Normal User</span>
-                <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">Citizen</span>
-              </button>
-            </div>
-
-            {/* Login Form */}
-            <form onSubmit={handleLoginSubmit} className="space-y-3">
-              {loginError && (
-                <div className="p-2.5 rounded-lg bg-rose-950/70 border border-rose-500/40 text-xs text-rose-300 flex items-center gap-1.5">
-                  <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
-                  <span>{loginError}</span>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
-                  Mail ID / Official Email
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@nerlogistics.gov.in"
-                    className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
-                  />
-                  <Mail className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
-                  />
-                  <Lock className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loginLoading}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-              >
-                {loginLoading ? 'Authenticating...' : 'Sign In'}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </form>
-
-            {/* Guest / Public Commuter Option */}
-            <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
-              <span className="text-[10px] text-[#DAC0A9]/60 font-mono">Password: admin123</span>
-              <button
-                type="button"
-                onClick={handleGuestContinue}
-                className="text-[#34D399] hover:underline font-semibold"
-              >
-                Continue as Guest →
-              </button>
+            {/* Step Progress Indicators */}
+            <div className="flex items-center gap-2 mt-3">
+              <div className={`h-1.5 rounded-full transition-all duration-300 ${introStep === 'location' ? 'w-6 bg-[#10B981]' : 'w-2 bg-[#3B281C]'}`} />
+              <div className={`h-1.5 rounded-full transition-all duration-300 ${introStep === 'role' ? 'w-6 bg-[#10B981]' : 'w-2 bg-[#3B281C]'}`} />
+              <div className={`h-1.5 rounded-full transition-all duration-300 ${introStep === 'login' ? 'w-6 bg-[#10B981]' : 'w-2 bg-[#3B281C]'}`} />
             </div>
           </div>
+
+          {/* ===================================================================== */}
+          {/* STEP 1: DEVICE LOCATION ACCESS WINDOW                                 */}
+          {/* ===================================================================== */}
+          {introStep === 'location' && (
+            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+                <div className="h-10 w-10 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#34D399] shrink-0 mt-0.5">
+                  <MapPin className="h-5 w-5 animate-pulse" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                      Grant Location Access
+                    </h3>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#10B981]/15 text-[#34D399] border border-[#10B981]/30">
+                      Step 1 of 3
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
+                    Allow access to your exact physical location to calculate real-time landslide reroutes, localized terrain warnings, and immediate weather telemetry in Northeast India.
+                  </p>
+                </div>
+              </div>
+
+              {/* Location Status Preview */}
+              <div className="p-3 rounded-xl bg-[#190F09] border border-[#3B281C] flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-slate-300 shrink-0">
+                  <Navigation className="h-4 w-4 text-[#34D399]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] font-semibold text-[#F8F2EA]">
+                    {userLocation ? 'Exact Location Synchronized' : 'Physical GPS Coordinates'}
+                  </div>
+                  <div className="text-[10px] text-[#DAC0A9]/70 font-mono truncate">
+                    {userLocation
+                      ? `${userLocation.latitude.toFixed(4)}°N, ${userLocation.longitude.toFixed(4)}°E (±${userLocation.accuracy}m)`
+                      : isLocating
+                      ? 'Requesting browser location permission...'
+                      : 'Click below to grant device GPS permission'}
+                  </div>
+                </div>
+                {userLocation && (
+                  <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    <CheckCircle2 className="h-3 w-3" /> Ready
+                  </span>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleAllowLocation}
+                  disabled={isLocating}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <MapPin className="h-4 w-4" />
+                  {isLocating ? 'Acquiring GPS...' : userLocation ? 'Continue with Detected Location' : 'Allow Exact Location'}
+                  <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSkipLocation}
+                  className="w-full py-2 px-3 rounded-xl bg-transparent hover:bg-[#190F09] text-[#DAC0A9] hover:text-[#F8F2EA] text-xs font-medium transition flex items-center justify-center gap-1 cursor-pointer border border-transparent hover:border-[#3B281C]"
+                >
+                  Skip & Continue with Default Region (Guwahati)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================================== */}
+          {/* STEP 2: ROLE SELECTION WINDOW (NORMAL_USER vs SUPER_ADMIN)            */}
+          {/* ===================================================================== */}
+          {introStep === 'role' && (
+            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+                <div className="h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                  <Shield className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                      Select Your Role
+                    </h3>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                      Step 2 of 3
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
+                    Choose whether you are accessing the network as a public commuter or an administrative authority:
+                  </p>
+                </div>
+              </div>
+
+              {/* Role Cards */}
+              <div className="space-y-3">
+                {/* NORMAL_USER Card */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectRole('normal_user')}
+                  className={`w-full p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-start gap-3.5 group ${
+                    selectedRole === 'normal_user'
+                      ? 'bg-emerald-950/40 border-emerald-500/60 ring-1 ring-emerald-500/40 shadow-lg shadow-emerald-950/50'
+                      : 'bg-[#190F09] border-[#3B281C] hover:border-emerald-500/40 hover:bg-[#1f130c]'
+                  }`}
+                >
+                  <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#F8F2EA] group-hover:text-emerald-300 transition">
+                        NORMAL_USER
+                      </span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Citizen / Commuter
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#DAC0A9] mt-1 leading-relaxed">
+                      Live landslide alerts, GIS interactive road status, verified clearance updates, and safe commuter bypass routing.
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-[#DAC0A9]/60 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
+                </button>
+
+                {/* SUPER_ADMIN Card */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectRole('super_admin')}
+                  className={`w-full p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-start gap-3.5 group ${
+                    selectedRole === 'super_admin'
+                      ? 'bg-blue-950/40 border-blue-500/60 ring-1 ring-blue-500/40 shadow-lg shadow-blue-950/50'
+                      : 'bg-[#190F09] border-[#3B281C] hover:border-blue-500/40 hover:bg-[#1f130c]'
+                  }`}
+                >
+                  <div className="h-10 w-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#F8F2EA] group-hover:text-blue-300 transition">
+                        SUPER_ADMIN
+                      </span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        Command Center
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#DAC0A9] mt-1 leading-relaxed">
+                      Full incident management: report landslides, publish emergency alerts, clear routes, and oversee interstate logistics.
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-[#DAC0A9]/60 group-hover:text-blue-400 group-hover:translate-x-0.5 transition shrink-0 self-center" />
+                </button>
+              </div>
+
+              {/* Navigation Footer */}
+              <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
+                <button
+                  type="button"
+                  onClick={() => setIntroStep('location')}
+                  className="text-[#DAC0A9]/80 hover:text-[#F8F2EA] flex items-center gap-1 transition cursor-pointer"
+                >
+                  <ArrowLeft className="h-3 w-3" /> Back to Location
+                </button>
+                <span className="text-[10px] text-[#DAC0A9]/50">Click role to proceed</span>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================================== */}
+          {/* STEP 3: MAIL ID & PASSWORD LOGIN WINDOW                               */}
+          {/* ===================================================================== */}
+          {introStep === 'login' && (
+            <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div className="flex items-start gap-3 pb-3 border-b border-[#3B281C]">
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
+                  selectedRole === 'super_admin'
+                    ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400'
+                    : 'bg-emerald-500/20 border border-emerald-500/40 text-[#34D399]'
+                }`}>
+                  <Lock className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-[#F8F2EA]">
+                      {selectedRole === 'super_admin' ? 'Super Admin Authentication' : 'Normal User Authentication'}
+                    </h3>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#10B981]/15 text-[#34D399] border border-[#10B981]/30">
+                      Step 3 of 3
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
+                    Enter your credentials for role <span className="font-bold text-[#F8F2EA] uppercase">{selectedRole}</span>:
+                  </p>
+                </div>
+              </div>
+
+              {/* Selected Role Badge with Quick Change Option */}
+              <div className="p-2.5 rounded-xl bg-[#190F09] border border-[#3B281C] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className={`h-2 w-2 rounded-full ${selectedRole === 'super_admin' ? 'bg-blue-400 animate-pulse' : 'bg-emerald-400 animate-pulse'}`} />
+                  <span className="text-xs font-semibold text-[#F8F2EA]">
+                    Active Role: <span className="font-mono text-[11px] text-[#A7F3D0]">{selectedRole === 'super_admin' ? 'SUPER_ADMIN' : 'NORMAL_USER'}</span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIntroStep('role')}
+                  className="text-[11px] text-[#DAC0A9] hover:text-[#F8F2EA] underline cursor-pointer"
+                >
+                  Change Role
+                </button>
+              </div>
+
+              {/* Login Form */}
+              <form onSubmit={handleLoginSubmit} className="space-y-3">
+                {loginError && (
+                  <div className="p-2.5 rounded-lg bg-rose-950/70 border border-rose-500/40 text-xs text-rose-300 flex items-center gap-1.5">
+                    <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+                    <span>{loginError}</span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                    Mail ID / Official Email
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@nerlogistics.gov.in"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                    />
+                    <Mail className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                    />
+                    <Lock className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loginLoading}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  {loginLoading ? 'Authenticating...' : 'Sign In & Enter'}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </form>
+
+              {/* Navigation Options */}
+              <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
+                <button
+                  type="button"
+                  onClick={() => setIntroStep('role')}
+                  className="text-[#DAC0A9]/80 hover:text-[#F8F2EA] flex items-center gap-1 transition cursor-pointer"
+                >
+                  <ArrowLeft className="h-3 w-3" /> Back
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGuestContinue}
+                  className="text-[#34D399] hover:underline font-semibold cursor-pointer"
+                >
+                  Enter as Guest →
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
