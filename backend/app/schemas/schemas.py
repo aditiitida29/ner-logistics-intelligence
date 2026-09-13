@@ -50,7 +50,23 @@ class IncidentCreate(BaseModel):
     reported_by: Optional[str] = "Field Officer"
     estimated_restoration: Optional[str] = "4-6 Hours"
     district_name: Optional[str] = None
+    affected_route: Optional[str] = None
+    incident_time: Optional[datetime] = None
     sync_status: Optional[str] = "Synced"
+
+class IncidentUpdate(BaseModel):
+    type: Optional[str] = None
+    description: Optional[str] = None
+    severity: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    location_name: Optional[str] = None
+    reported_by: Optional[str] = None
+    status: Optional[str] = None
+    estimated_restoration: Optional[str] = None
+    district_name: Optional[str] = None
+    affected_route: Optional[str] = None
+    incident_time: Optional[datetime] = None
 
 class IncidentResponse(BaseModel):
     id: int
@@ -64,8 +80,10 @@ class IncidentResponse(BaseModel):
     reported_by: str
     status: str
     created_at: datetime
+    incident_time: Optional[datetime] = None
     estimated_restoration: str
     district_name: Optional[str] = None
+    affected_route: Optional[str] = None
     sync_status: Optional[str] = "Synced"
 
     class Config:

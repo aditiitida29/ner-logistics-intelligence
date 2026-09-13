@@ -21,16 +21,29 @@ import { EmergencyModePage } from './pages/EmergencyModePage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { DriverPortalPage } from './pages/DriverPortalPage';
+import { UserDashboardPage } from './pages/UserDashboardPage';
 
 const AppContent: React.FC = () => {
-  const { currentPage, isOfflineQueueOpen, setIsOfflineQueueOpen, showCinematicIntro, setShowCinematicIntro } = useApp();
+  const { currentPage, isOfflineQueueOpen, setIsOfflineQueueOpen, showCinematicIntro, setShowCinematicIntro, user } = useApp();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Render current page based on routing state
+  const isNormalUser = (user?.role || '').toLowerCase() === 'normal_user';
+
+  // Render current page based on routing state with RBAC protection
   const renderPage = () => {
+    // Normal User Route Guards: redirect restricted admin views to commuter dashboard
+    if (isNormalUser) {
+      const adminOnlyPages = ['vehicles', 'deliveries', 'emergency', 'analytics', 'settings', 'driver-portal'];
+      if (adminOnlyPages.includes(currentPage)) {
+        return <UserDashboardPage />;
+      }
+    }
+
     switch (currentPage) {
       case 'login':
         return <LoginPage />;
+      case 'user-dashboard':
+        return <UserDashboardPage />;
       case 'live-map':
         return <LiveMapPage />;
       case 'route-intel':
@@ -55,7 +68,7 @@ const AppContent: React.FC = () => {
         return <DriverPortalPage />;
       case 'dashboard':
       default:
-        return <DashboardPage />;
+        return isNormalUser ? <UserDashboardPage /> : <DashboardPage />;
     }
   };
 

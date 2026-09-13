@@ -58,6 +58,8 @@ export interface Incident {
   created_at: string;
   estimated_restoration: string;
   district_name?: string | null;
+  affected_route?: string | null;
+  incident_time?: string | null;
   sync_status?: string;
 }
 
@@ -142,6 +144,7 @@ export interface AlertItem {
   location: string;
   related_type?: string | null;
   related_id?: string | null;
+  affected_route?: string | null;
   is_read: boolean;
   created_at: string;
 }

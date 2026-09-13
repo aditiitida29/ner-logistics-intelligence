@@ -13,7 +13,7 @@ def seed_database():
     """Seed comprehensive realistic NER logistics and accessibility data."""
     Base.metadata.create_all(bind=engine)
     
-    # Safe auto-migration for sync_status in incidents
+    # Safe auto-migrations for incidents table
     try:
         with engine.connect() as conn:
             conn.execute(text("ALTER TABLE incidents ADD COLUMN sync_status VARCHAR(50) DEFAULT 'Synced'"))
@@ -21,16 +21,36 @@ def seed_database():
     except Exception:
         pass
 
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE incidents ADD COLUMN affected_route VARCHAR(100)"))
+            conn.commit()
+    except Exception:
+        pass
+
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE incidents ADD COLUMN incident_time DATETIME"))
+            conn.commit()
+    except Exception:
+        pass
+
     db: Session = SessionLocal()
 
     try:
-        # Ensure all 5 RBAC demo accounts are seeded
+        # Ensure all RBAC demo accounts are seeded (Super Admin, Normal User, and supporting roles)
         demo_users = [
             {
                 "email": "admin@nerlogistics.gov.in",
                 "name": "Dr. A. Sharma (Super Admin)",
                 "role": "super_admin",
                 "department": "North Eastern Council & MoRTH Logistics Wing"
+            },
+            {
+                "email": "citizen@nerlogistics.gov.in",
+                "name": "Priya Sharma (Normal User / Commuter)",
+                "role": "normal_user",
+                "department": "Public Commuter & Citizen Transit Portal"
             },
             {
                 "email": "state@nerlogistics.gov.in",
@@ -73,9 +93,50 @@ def seed_database():
                 existing.password_hash = hash_password("admin123")
         db.commit()
 
+        # Update existing incidents affected_route if empty
+        route_mappings = {
+            "Sela Pass": "NH-13",
+            "Bogibeel": "NH-37",
+            "Zubza": "NH-29",
+            "Kangpokpi": "NH-2",
+            "Sonapur": "NH-6",
+            "Silchar": "NH-306",
+            "Rangpo": "NH-10",
+            "Khanapara": "NH-27",
+            "Shillong": "NH-106",
+            "Tuirial": "NH-54",
+            "Papum": "NH-415",
+            "Chumukedima": "NH-29",
+            "Torhung": "Tiddim Road",
+            "Tezpur": "NH-715",
+            "Lunglei": "NH-54",
+            "Agartala": "NH-8",
+            "South Sikkim": "SH-7",
+            "Jorhat": "NH-715",
+            "Siang": "NH-515",
+            "Garo Hills": "NH-217",
+            "Jung Waterfall": "NH-13",
+            "Cachar": "NH-37",
+            "Udaipur": "NH-8",
+            "Kohima": "NH-29",
+            "Imphal": "NH-102",
+            "Dikchu": "NH-10"
+        }
+        for inc in db.query(Incident).all():
+            if not inc.affected_route:
+                matched = False
+                for key, route_val in route_mappings.items():
+                    if key.lower() in (inc.location_name or "").lower() or key.lower() in (inc.description or "").lower():
+                        inc.affected_route = route_val
+                        matched = True
+                        break
+                if not matched:
+                    inc.affected_route = "NH-27 Corridor"
+        db.commit()
+
         # Check if rest of data is already seeded
         if db.query(District).first():
-            print("Districts and operational datasets already present. Seeded all 5 RBAC accounts.")
+            print("Districts and operational datasets already present. Seeded SUPER_ADMIN & NORMAL_USER accounts with routes.")
             return
 
         print("Seeding database with realistic North Eastern Region logistics data...")

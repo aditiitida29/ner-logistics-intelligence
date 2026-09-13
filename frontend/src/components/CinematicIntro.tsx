@@ -1,17 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Navigation, MapPin, CheckCircle2, Shield, Radio, CloudRain, Activity } from 'lucide-react';
+import { api } from '../services/api';
+import {
+  Navigation,
+  MapPin,
+  CheckCircle2,
+  Shield,
+  Radio,
+  CloudRain,
+  Activity,
+  Mail,
+  Lock,
+  ArrowRight,
+  AlertCircle
+} from 'lucide-react';
 
 interface CinematicIntroProps {
   onComplete: () => void;
 }
 
 export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
-  const { userLocation, syncRealLocation, isLocating } = useApp();
+  const { userLocation, syncRealLocation, isLocating, setUser, setCurrentPage, addToast } = useApp();
   const [elapsed, setElapsed] = useState<number>(0);
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
-  const [locationRequested, setLocationRequested] = useState<boolean>(false);
-  const [autoEnterCountdown, setAutoEnterCountdown] = useState<number>(8);
+  const [email, setEmail] = useState<string>('admin@nerlogistics.gov.in');
+  const [password, setPassword] = useState<string>('admin123');
+  const [loginLoading, setLoginLoading] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Fast Cinematic Sequence Timeline (3–4 seconds total):
@@ -21,7 +36,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
   // 1.9s – 2.8s: Topographic Digital Terrain Map (Luminous GIS Contour Lines & Elevation Data)
   // 2.3s – 3.3s: Intelligent Glowing Reroute Line navigating safely around the disruption
   // 2.7s – 3.5s: Subtle Real-Time Telemetry Pulses (Weather, Hazard Report, Corridor Beacon)
-  // 3.1s – 4.0s+: Digital Map Settles, NER LOGISTICS Branding & GPS Location Permission Request
+  // 3.1s – 4.0s+: Digital Map Settles, NER LOGISTICS Branding & Login Window Pop Up
 
   // Frame Timer
   useEffect(() => {
@@ -42,18 +57,33 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  // Graceful auto-enter countdown once branding is revealed
-  useEffect(() => {
-    if (elapsed < 3.4) return;
-    if (autoEnterCountdown <= 0) {
-      handleSkip();
-      return;
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    setLoginError(null);
+    try {
+      const res = await api.login(email, password);
+      setUser(res.user);
+      addToast(`Welcome back, ${res.user.name}!`, 'success');
+      if (res.user.role === 'normal_user') {
+        setCurrentPage('user-dashboard');
+      } else {
+        setCurrentPage('dashboard');
+      }
+      setIsFadingOut(true);
+      setTimeout(onComplete, 400);
+    } catch (err: any) {
+      setLoginError(err.message || 'Invalid credentials. Please verify your mail ID and password.');
+    } finally {
+      setLoginLoading(false);
     }
-    const timer = setTimeout(() => {
-      setAutoEnterCountdown(prev => prev - 1);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [elapsed, autoEnterCountdown]);
+  };
+
+  const handleGuestContinue = () => {
+    setCurrentPage('user-dashboard');
+    setIsFadingOut(true);
+    setTimeout(onComplete, 400);
+  };
 
   // Atmospheric Monsoon Rain Canvas
   useEffect(() => {
@@ -116,26 +146,10 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     };
   }, []);
 
-  // Handle requesting GPS permission
-  const handleAllowLocation = async () => {
-    setLocationRequested(true);
-    try {
-      await syncRealLocation(true);
-    } catch {
-      // fallback
-    }
-    setTimeout(() => {
-      setIsFadingOut(true);
-      setTimeout(onComplete, 500);
-    }, 600);
-  };
-
   const handleSkip = () => {
     setIsFadingOut(true);
     setTimeout(onComplete, 400);
   };
-
-  const handleSkipLocation = handleSkip;
 
   // Phase opacities & scale factors (fast 3–4s progression)
   // Phase 1 (0.0s – 1.2s): Macro Wildflowers & Leaves
@@ -611,63 +625,121 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
             </p>
           </div>
 
-          {/* Location Permission Request Card */}
-          <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4">
-            <div className="flex items-start gap-3">
+          {/* Small Login Popup Window */}
+          <div className="w-full max-w-md rounded-2xl bg-[#251810]/95 border border-[#3B281C] p-5 shadow-2xl backdrop-blur-xl space-y-4 animate-in fade-in zoom-in-95 duration-300">
+            <div className="flex items-start gap-3 pb-2 border-b border-[#3B281C]">
               <div className="h-10 w-10 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#34D399] shrink-0 mt-0.5">
-                <Navigation className={`h-5 w-5 ${isLocating ? 'animate-spin' : 'animate-pulse'}`} />
+                <Lock className="h-5 w-5" />
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-bold text-[#F8F2EA]">
-                  Enable Real-Time GPS Location
+                  Portal Sign In
                 </h3>
-                <p className="text-xs text-[#DAC0A9] mt-1 leading-relaxed">
-                  Allow location access so NER Logistics can calculate dynamic landslide detours and sync terrain safety for your current coordinates.
+                <p className="text-xs text-[#DAC0A9] mt-0.5 leading-relaxed">
+                  Enter your mail ID and password to access the command network:
                 </p>
               </div>
             </div>
 
-            {/* GPS Fix Status */}
-            {userLocation && (
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#190F09]/80 border border-[#10B981]/40 text-xs text-[#34D399] font-mono">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-[#34D399]" />
-                  <span>GPS Synced: {userLocation.latitude.toFixed(2)}°N, {userLocation.longitude.toFixed(2)}°E</span>
-                </div>
-                <span className="text-[10px] text-[#A7F3D0] font-bold">±{userLocation.accuracy}m</span>
-              </div>
-            )}
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+            {/* Quick 1-Click Role Fillers */}
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={handleAllowLocation}
-                disabled={isLocating}
-                className="w-full flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs transition shadow-lg disabled:opacity-50"
+                onClick={() => {
+                  setEmail('admin@nerlogistics.gov.in');
+                  setPassword('admin123');
+                  setLoginError(null);
+                }}
+                className={`flex-1 py-1.5 px-2.5 rounded-lg border text-left transition flex items-center justify-between ${
+                  email === 'admin@nerlogistics.gov.in'
+                    ? 'bg-blue-950/60 border-blue-500/60 text-blue-300'
+                    : 'bg-[#190F09] border-[#3B281C] text-[#DAC0A9] hover:border-slate-600'
+                }`}
               >
-                <MapPin className="h-4 w-4" />
-                <span>{isLocating ? 'Acquiring Fix...' : 'Allow Location Access'}</span>
+                <span className="text-[11px] font-bold">Super Admin</span>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono">Full</span>
               </button>
 
               <button
                 type="button"
-                onClick={handleSkip}
-                className="w-full sm:w-auto py-2.5 px-3.5 rounded-xl bg-[#190F09] hover:bg-[#190F09]/80 border border-[#3B281C] text-xs font-semibold text-[#DAC0A9] hover:text-[#F8F2EA] transition"
+                onClick={() => {
+                  setEmail('citizen@nerlogistics.gov.in');
+                  setPassword('admin123');
+                  setLoginError(null);
+                }}
+                className={`flex-1 py-1.5 px-2.5 rounded-lg border text-left transition flex items-center justify-between ${
+                  email === 'citizen@nerlogistics.gov.in'
+                    ? 'bg-emerald-950/60 border-emerald-500/60 text-emerald-300'
+                    : 'bg-[#190F09] border-[#3B281C] text-[#DAC0A9] hover:border-slate-600'
+                }`}
               >
-                Continue (Regional Hub)
+                <span className="text-[11px] font-bold">Normal User</span>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">Citizen</span>
               </button>
             </div>
 
-            {/* Auto-enter indicator */}
-            <div className="flex items-center justify-between pt-1 border-t border-[#3B281C]/60 text-[11px] text-[#DAC0A9]/60 font-mono">
-              <span>Auto-entering in {autoEnterCountdown}s...</span>
+            {/* Login Form */}
+            <form onSubmit={handleLoginSubmit} className="space-y-3">
+              {loginError && (
+                <div className="p-2.5 rounded-lg bg-rose-950/70 border border-rose-500/40 text-xs text-rose-300 flex items-center gap-1.5">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+                  <span>{loginError}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                  Mail ID / Official Email
+                </label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@nerlogistics.gov.in"
+                    className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                  />
+                  <Mail className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-[#DAC0A9] mb-1">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-8 pr-3 py-2 rounded-xl bg-[#190F09] border border-[#3B281C] text-xs text-[#F8F2EA] placeholder-[#DAC0A9]/40 focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]"
+                  />
+                  <Lock className="h-3.5 w-3.5 text-[#DAC0A9]/60 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loginLoading}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {loginLoading ? 'Authenticating...' : 'Sign In'}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+
+            {/* Guest / Public Commuter Option */}
+            <div className="pt-2 border-t border-[#3B281C]/80 flex items-center justify-between text-[11px] text-[#DAC0A9]">
+              <span className="text-[10px] text-[#DAC0A9]/60 font-mono">Password: admin123</span>
               <button
                 type="button"
-                onClick={handleSkip}
+                onClick={handleGuestContinue}
                 className="text-[#34D399] hover:underline font-semibold"
               >
-                Enter Now →
+                Continue as Guest →
               </button>
             </div>
           </div>

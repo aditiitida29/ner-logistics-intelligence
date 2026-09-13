@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { api } from '../services/api';
-import { Shield, Lock, Mail, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Shield, Lock, Mail, CheckCircle2, ArrowRight, UserCheck, ShieldAlert } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { setUser, setCurrentPage, addToast } = useApp();
@@ -18,18 +18,18 @@ export const LoginPage: React.FC = () => {
       const res = await api.login(email, password);
       setUser(res.user);
       addToast(`Welcome back, ${res.user.name}!`, 'success');
-      setCurrentPage('dashboard');
+      if (res.user.role === 'normal_user') {
+        setCurrentPage('user-dashboard');
+      } else if (res.user.role === 'driver') {
+        setCurrentPage('driver-portal');
+      } else {
+        setCurrentPage('dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please verify your credentials.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const selectDemoRole = (roleEmail: string, roleName: string) => {
-    setEmail(roleEmail);
-    setPassword('admin123');
-    addToast(`${roleName} credentials selected (${roleEmail}). Click Sign In to proceed.`, 'info');
   };
 
   const directDemoLogin = async (roleEmail: string) => {
@@ -41,7 +41,9 @@ export const LoginPage: React.FC = () => {
       const res = await api.login(roleEmail, 'admin123');
       setUser(res.user);
       addToast(`Authenticated as ${res.user.name} (${res.user.role.toUpperCase()})!`, 'success');
-      if (res.user.role === 'driver') {
+      if (res.user.role === 'normal_user') {
+        setCurrentPage('user-dashboard');
+      } else if (res.user.role === 'driver') {
         setCurrentPage('driver-portal');
       } else if (res.user.role === 'field_officer') {
         setCurrentPage('incidents');
@@ -56,94 +58,122 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg space-y-7 rounded-2xl border border-slate-800 bg-slate-900/95 p-7 sm:p-8 shadow-2xl backdrop-blur-md">
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-lg space-y-6 rounded-2xl border border-slate-800 bg-slate-900/95 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto h-12 w-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-3 shadow-inner">
             <Shield className="h-7 w-7" />
           </div>
           <h2 className="text-xl font-extrabold text-white tracking-tight">
-            NER Logistics Intelligence
+            NER Logistics & Landslide Intelligence
           </h2>
           <p className="mt-1 text-xs text-slate-400">
             Government of India • Ministry of Development of North Eastern Region
           </p>
         </div>
 
-        {/* 5 RBAC Roles Quick Switcher */}
-        <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2.5">
+        {/* 2 Connected Primary User Roles Section */}
+        <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-bold text-blue-400">
               <CheckCircle2 className="h-4 w-4" />
-              <span>Role-Based Access Control (RBAC) Accounts</span>
+              <span>Select Role (1-Click Instant Demo Login)</span>
             </div>
             <span className="text-[10px] font-mono text-slate-400">Password: admin123</span>
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            Select an official role to experience how the interface dynamically adapts per permission level:
-          </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Super Admin Primary Card */}
             <button
               type="button"
               onClick={() => directDemoLogin('admin@nerlogistics.gov.in')}
-              className="p-2 rounded-lg bg-slate-900 hover:bg-blue-950/40 border border-slate-700/80 hover:border-blue-500/50 text-left transition flex items-center justify-between"
+              className="p-3 rounded-xl bg-slate-900 hover:bg-blue-950/50 border-2 border-blue-500/60 hover:border-blue-400 text-left transition shadow-md group flex flex-col justify-between"
             >
               <div>
-                <p className="text-xs font-bold text-white">Super Admin</p>
-                <p className="text-[10px] text-slate-400 truncate">admin@nerlogistics.gov.in</p>
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className="text-xs font-black text-white group-hover:text-blue-300 transition flex items-center gap-1">
+                    <ShieldAlert className="h-3.5 w-3.5 text-blue-400" />
+                    <span>SUPER ADMIN</span>
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-500/30 text-blue-300 font-mono font-bold">
+                    Full Admin
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-snug">
+                  Create, edit, resolve landslides, manage emergency corridors & full command center.
+                </p>
               </div>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">Full</span>
+              <p className="text-[10px] text-slate-400 font-mono mt-2 pt-1 border-t border-slate-800 truncate">
+                admin@nerlogistics.gov.in
+              </p>
             </button>
 
+            {/* Normal User Primary Card */}
             <button
               type="button"
-              onClick={() => directDemoLogin('state@nerlogistics.gov.in')}
-              className="p-2 rounded-lg bg-slate-900 hover:bg-emerald-950/40 border border-slate-700/80 hover:border-emerald-500/50 text-left transition flex items-center justify-between"
+              onClick={() => directDemoLogin('citizen@nerlogistics.gov.in')}
+              className="p-3 rounded-xl bg-slate-900 hover:bg-emerald-950/50 border-2 border-emerald-500/60 hover:border-emerald-400 text-left transition shadow-md group flex flex-col justify-between"
             >
               <div>
-                <p className="text-xs font-bold text-white">State Admin</p>
-                <p className="text-[10px] text-slate-400 truncate">state@nerlogistics.gov.in</p>
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className="text-xs font-black text-white group-hover:text-emerald-300 transition flex items-center gap-1">
+                    <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>NORMAL USER</span>
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/30 text-emerald-300 font-mono font-bold">
+                    Commuter
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-snug">
+                  Public dashboard, live GIS map, real-time landslide alerts & detailed hazard inspection.
+                </p>
               </div>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">State</span>
+              <p className="text-[10px] text-slate-400 font-mono mt-2 pt-1 border-t border-slate-800 truncate">
+                citizen@nerlogistics.gov.in
+              </p>
             </button>
+          </div>
 
-            <button
-              type="button"
-              onClick={() => directDemoLogin('field@nerlogistics.gov.in')}
-              className="p-2 rounded-lg bg-slate-900 hover:bg-amber-950/40 border border-slate-700/80 hover:border-amber-500/50 text-left transition flex items-center justify-between"
-            >
-              <div>
-                <p className="text-xs font-bold text-white">Field Officer</p>
-                <p className="text-[10px] text-slate-400 truncate">field@nerlogistics.gov.in</p>
-              </div>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">Field</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => directDemoLogin('logistics@nerlogistics.gov.in')}
-              className="p-2 rounded-lg bg-slate-900 hover:bg-purple-950/40 border border-slate-700/80 hover:border-purple-500/50 text-left transition flex items-center justify-between"
-            >
-              <div>
-                <p className="text-xs font-bold text-white">Logistics Operator</p>
-                <p className="text-[10px] text-slate-400 truncate">logistics@nerlogistics.gov.in</p>
-              </div>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">Fleet</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => directDemoLogin('driver@nerlogistics.gov.in')}
-              className="sm:col-span-2 p-2 rounded-lg bg-slate-900 hover:bg-blue-950/40 border border-slate-700/80 hover:border-blue-500/50 text-left transition flex items-center justify-between"
-            >
-              <div>
-                <p className="text-xs font-bold text-white">Driver (Highway Convoy)</p>
-                <p className="text-[10px] text-slate-400 truncate">driver@nerlogistics.gov.in (AS-01-GC-4412)</p>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">Driver Portal</span>
-            </button>
+          {/* Secondary supporting demo accounts */}
+          <div className="pt-2 border-t border-slate-800/80">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block mb-1.5">
+              Supporting Operational Roles:
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <button
+                type="button"
+                onClick={() => directDemoLogin('state@nerlogistics.gov.in')}
+                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-left text-[10px] text-slate-300 transition truncate"
+                title="State Logistics Director"
+              >
+                State Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => directDemoLogin('field@nerlogistics.gov.in')}
+                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-left text-[10px] text-slate-300 transition truncate"
+                title="Field Incident Officer"
+              >
+                Field Officer
+              </button>
+              <button
+                type="button"
+                onClick={() => directDemoLogin('logistics@nerlogistics.gov.in')}
+                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-left text-[10px] text-slate-300 transition truncate"
+                title="Fleet Dispatch Operator"
+              >
+                Logistics Op.
+              </button>
+              <button
+                type="button"
+                onClick={() => directDemoLogin('driver@nerlogistics.gov.in')}
+                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-left text-[10px] text-slate-300 transition truncate"
+                title="Highway Convoy Driver"
+              >
+                Driver Portal
+              </button>
+            </div>
           </div>
         </div>
 
@@ -164,7 +194,7 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                placeholder="officer@nerlogistics.gov.in"
+                placeholder="officer@nerlogistics.gov.in or citizen@nerlogistics.gov.in"
               />
               <Mail className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             </div>
@@ -190,7 +220,7 @@ export const LoginPage: React.FC = () => {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-white text-slate-900 font-bold text-sm transition shadow-lg disabled:opacity-50"
           >
-            {loading ? 'Authenticating...' : 'Sign In to Command Center'}
+            {loading ? 'Authenticating...' : 'Sign In'}
             <ArrowRight className="h-4 w-4" />
           </button>
         </form>

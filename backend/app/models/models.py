@@ -43,8 +43,10 @@ class Incident(Base):
     reported_by = Column(String(100), default="Field Officer")
     status = Column(String(50), default="Active")  # Active, In Progress, Resolved
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    incident_time = Column(DateTime, default=datetime.datetime.utcnow)
     estimated_restoration = Column(String(100), default="4-8 Hours")
     district_name = Column(String(100), nullable=True)
+    affected_route = Column(String(100), nullable=True)
     sync_status = Column(String(50), default="Synced")  # Synced, Pending, Offline-Created
 
 class Vehicle(Base):

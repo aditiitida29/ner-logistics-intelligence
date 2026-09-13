@@ -40,21 +40,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   // Base list of all items
   const allNavItems = [
-    { id: 'dashboard', label: t('navDashboard'), icon: LayoutDashboard, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator', 'field_officer'] },
+    { id: 'user-dashboard', label: 'Commuter Portal', icon: LayoutDashboard, roles: ['normal_user', 'super_admin', 'admin'] },
+    { id: 'dashboard', label: 'Admin Command', icon: LayoutDashboard, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator', 'field_officer'] },
     { id: 'driver-portal', label: 'Driver Console', icon: Truck, roles: ['driver', 'super_admin', 'admin'] },
-    { id: 'live-map', label: t('navLiveMap'), icon: MapIcon, roles: ['super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
-    { id: 'route-intel', label: t('navRouteIntel'), icon: Navigation, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator', 'field_officer', 'driver'] },
+    { id: 'live-map', label: t('navLiveMap'), icon: MapIcon, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
+    { id: 'alerts', label: 'Landslide Alerts', icon: Bell, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
+    { id: 'route-intel', label: t('navRouteIntel'), icon: Navigation, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'logistics_operator', 'field_officer', 'driver'] },
+    { id: 'districts', label: 'Weather & Safety', icon: Building2, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer'] },
     { id: 'vehicles', label: t('navVehicleTracking'), icon: Truck, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
     {
       id: 'incidents',
       label: role === 'driver' ? 'Report Road Hazard' : t('navIncidents'),
       icon: AlertTriangle,
       badge: pendingOfflineCount > 0 ? `${pendingOfflineCount} sync` : undefined,
-      roles: ['super_admin', 'admin', 'state_admin', 'field_officer', 'driver']
+      roles: ['super_admin', 'admin', 'state_admin', 'field_officer']
     },
-    { id: 'alerts', label: t('navAlerts'), icon: Bell, roles: ['super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
     { id: 'deliveries', label: t('navDeliveries'), icon: PackageCheck, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
-    { id: 'districts', label: t('navDistricts'), icon: Building2, roles: ['super_admin', 'admin', 'state_admin', 'field_officer'] },
     {
       id: 'emergency',
       label: t('navEmergency'),
@@ -64,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     },
     { id: 'analytics', label: t('navAnalytics'), icon: BarChart3, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
     { id: 'settings', label: t('navSettings'), icon: Settings, roles: ['super_admin', 'admin'] },
-    { id: 'login', label: t('login'), icon: LogIn, roles: ['super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] }
+    { id: 'login', label: t('login'), icon: LogIn, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] }
   ];
 
   const navItems = allNavItems.filter(item => item.roles.includes(role));

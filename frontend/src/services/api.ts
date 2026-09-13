@@ -65,9 +65,10 @@ class ApiService {
       // Backend unavailable - use local authenticated demo role accounts
     }
 
-    // Offline fallback authentication for all 5 RBAC roles
+    // Offline fallback authentication for RBAC roles
     const accounts: Record<string, any> = {
       'admin@nerlogistics.gov.in': { id: 1, name: 'Senior Logistics Director (NER)', email: 'admin@nerlogistics.gov.in', role: 'super_admin', department: 'North Eastern Council (NEC)' },
+      'citizen@nerlogistics.gov.in': { id: 6, name: 'Priya Sharma (Public Commuter)', email: 'citizen@nerlogistics.gov.in', role: 'normal_user', department: 'Public Commuter Portal' },
       'state@nerlogistics.gov.in': { id: 2, name: 'Rajesh Kalita (Assam State Director)', email: 'state@nerlogistics.gov.in', role: 'state_admin', department: 'Assam State Transport Department' },
       'field@nerlogistics.gov.in': { id: 3, name: 'K. Meitei (Field Incident Officer)', email: 'field@nerlogistics.gov.in', role: 'field_officer', department: 'Border Roads & PWD Field Division' },
       'logistics@nerlogistics.gov.in': { id: 4, name: 'Vikram Das (Logistics & Fleet Operator)', email: 'logistics@nerlogistics.gov.in', role: 'logistics_operator', department: 'NER Strategic Freight Operations' },
@@ -250,6 +251,69 @@ class ApiService {
       district_name: district_name || 'Assigned District',
       sync_status: 'Pending'
     };
+  }
+
+  async updateIncident(incidentId: number, data: Partial<Incident>): Promise<Incident> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/incidents/${incidentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeader()
+        },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        // Update local cache
+        const list = this.getFromCache<Incident[]>('incidents', []);
+        const idx = list.findIndex(i => i.id === incidentId);
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...updated };
+          this.saveToCache('incidents', list);
+        }
+        return updated;
+      }
+      const err = await res.json().catch(() => ({ detail: 'Update failed' }));
+      throw new Error(err.detail || `Server returned ${res.status}`);
+    } catch (e: any) {
+      if (e.message && e.message.includes('403')) {
+        throw new Error('Unauthorized: Super Admin privileges required to edit incidents.');
+      }
+      throw e;
+    }
+  }
+
+  async updateIncidentStatus(incidentId: number, status: string) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/incidents/${incidentId}/status?status=${encodeURIComponent(status)}`, {
+        method: 'PUT',
+        headers: this.getAuthHeader()
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({ detail: 'Status update failed' }));
+      throw new Error(err.detail || `Server returned ${res.status}`);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async deleteIncident(incidentId: number) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/incidents/${incidentId}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeader()
+      });
+      if (res.ok) {
+        const list = this.getFromCache<Incident[]>('incidents', []);
+        this.saveToCache('incidents', list.filter(i => i.id !== incidentId));
+        return await res.json();
+      }
+      const err = await res.json().catch(() => ({ detail: 'Delete failed' }));
+      throw new Error(err.detail || `Server returned ${res.status}`);
+    } catch (e: any) {
+      throw e;
+    }
   }
 
   // Vehicles & GPS Simulation

@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { api } from '../services/api';
 import { AlertItem } from '../types';
 import { Badge } from '../components/UI/Badge';
+import { AlertDetailModal, AlertDetailData } from '../components/AlertDetailModal';
 import {
   Bell,
   CheckCheck,
@@ -14,7 +15,8 @@ import {
   Clock,
   MapPin,
   Check,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from 'lucide-react';
 
 export const AlertsPage: React.FC = () => {
@@ -22,6 +24,7 @@ export const AlertsPage: React.FC = () => {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [severityFilter, setSeverityFilter] = useState('All');
+  const [selectedAlert, setSelectedAlert] = useState<AlertDetailData | null>(null);
 
   const loadAlerts = async () => {
     try {
@@ -40,7 +43,8 @@ export const AlertsPage: React.FC = () => {
     loadAlerts();
   }, []);
 
-  const handleMarkRead = async (id: number) => {
+  const handleMarkRead = async (id: number, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     try {
       await api.markAlertRead(id);
       setAlerts(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a));
@@ -83,13 +87,13 @@ export const AlertsPage: React.FC = () => {
             )}
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Automated alerts triggered by critical landslides, vaccine temperature risks, river overflow, and roadblock closures.
+            Real-time automated alerts triggered by landslides, road blockages, river overflow, and freight emergencies across Northeast India.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
-            onClick={handleMarkAllAllRead => handleMarkAllRead()}
+            onClick={handleMarkAllRead}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 transition"
           >
             <CheckCheck className="h-4 w-4 text-emerald-400" />
@@ -98,8 +102,9 @@ export const AlertsPage: React.FC = () => {
           <button
             onClick={loadAlerts}
             className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+            title="Refresh alerts"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
@@ -130,9 +135,20 @@ export const AlertsPage: React.FC = () => {
           return (
             <div
               key={a.id}
-              className={`p-4 rounded-xl border transition flex flex-col sm:flex-row items-start justify-between gap-4 shadow-lg ${
+              onClick={() => setSelectedAlert({
+                id: a.id,
+                title: a.title,
+                description: a.description,
+                severity: a.severity,
+                location: a.location,
+                affected_route: a.affected_route,
+                created_at: a.created_at,
+                related_type: a.related_type,
+                related_id: a.related_id
+              })}
+              className={`p-4 rounded-xl border transition cursor-pointer flex flex-col sm:flex-row items-start justify-between gap-4 shadow-lg hover:border-slate-600 ${
                 a.is_read
-                  ? 'border-slate-800/80 bg-slate-900/60 opacity-80'
+                  ? 'border-slate-800/80 bg-slate-900/60 opacity-80 hover:opacity-100'
                   : isCritical
                   ? 'border-rose-500/40 bg-rose-950/20'
                   : isWarning
@@ -157,6 +173,11 @@ export const AlertsPage: React.FC = () => {
                     <Badge variant={isCritical ? 'blocked' : (isWarning ? 'caution' : 'info')} size="sm">
                       {a.severity}
                     </Badge>
+                    {a.affected_route && (
+                      <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono text-[10px] font-bold">
+                        {a.affected_route}
+                      </span>
+                    )}
                     {!a.is_read && (
                       <span className="h-2 w-2 rounded-full bg-blue-400" title="Unread Alert" />
                     )}
@@ -185,10 +206,10 @@ export const AlertsPage: React.FC = () => {
               </div>
 
               {/* Action */}
-              <div className="flex items-center gap-2 self-end sm:self-center">
+              <div className="flex items-center gap-2 self-end sm:self-center" onClick={(e) => e.stopPropagation()}>
                 {!a.is_read && (
                   <button
-                    onClick={() => handleMarkRead(a.id)}
+                    onClick={(e) => handleMarkRead(a.id, e)}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition"
                   >
                     <Check className="h-3.5 w-3.5 text-emerald-400" />
@@ -196,21 +217,36 @@ export const AlertsPage: React.FC = () => {
                   </button>
                 )}
                 <button
-                  onClick={() => {
-                    if (a.related_type === 'vehicle') setCurrentPage('vehicles');
-                    else if (a.related_type === 'incident') setCurrentPage('incidents');
-                    else setCurrentPage('live-map');
-                  }}
-                  className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition"
-                  title="Navigate to related corridor"
+                  onClick={() => setSelectedAlert({
+                    id: a.id,
+                    title: a.title,
+                    description: a.description,
+                    severity: a.severity,
+                    location: a.location,
+                    affected_route: a.affected_route,
+                    created_at: a.created_at,
+                    related_type: a.related_type,
+                    related_id: a.related_id
+                  })}
+                  className="px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-medium flex items-center gap-1 transition"
+                  title="View full alert details"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <span>Details</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Alert Detail Modal */}
+      <AlertDetailModal
+        alert={selectedAlert}
+        isOpen={selectedAlert !== null}
+        onClose={() => setSelectedAlert(null)}
+        onViewOnMap={() => setCurrentPage('live-map')}
+      />
     </div>
   );
 };
