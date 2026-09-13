@@ -16,7 +16,6 @@ export const translations: Record<Language, Record<string, string>> = {
     navAlerts: 'Alert Center',
     navDeliveries: 'Logistics / Deliveries',
     navDistricts: 'District Intelligence',
-    navEmergency: 'Emergency Mode',
     navAnalytics: 'Analytics & Trends',
     navSettings: 'Settings',
     
@@ -91,7 +90,6 @@ export const translations: Record<Language, Record<string, string>> = {
     navAlerts: 'अलर्ट केंद्र',
     navDeliveries: 'लॉजिस्टिक्स एवं आपूर्ति',
     navDistricts: 'जिला खुफिया विश्लेषण',
-    navEmergency: 'आपातकालीन मोड',
     navAnalytics: 'विश्लेषण एवं रुझान',
     navSettings: 'सेटिंग्स',
 
@@ -166,7 +164,6 @@ export const translations: Record<Language, Record<string, string>> = {
     navAlerts: 'সতৰ্কতা কেন্দ্ৰ',
     navDeliveries: 'যোগান আৰু বিতৰণ',
     navDistricts: 'জিলা বুদ্ধিমত্তা',
-    navEmergency: 'জৰুৰীকালীন অৱস্থা',
     navAnalytics: 'বিশ্লেষণ আৰু প্ৰৱণতা',
     navSettings: 'ছেটিংছ',
 

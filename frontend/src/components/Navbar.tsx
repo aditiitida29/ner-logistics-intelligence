@@ -4,7 +4,6 @@ import { Region, Language, Theme } from '../types';
 import {
   Bell,
   Search,
-  AlertOctagon,
   Shield,
   Wifi,
   WifiOff,
@@ -40,8 +39,6 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
     theme,
     setTheme,
     t,
-    isEmergencyMode,
-    setIsEmergencyMode,
     isSimulationActive,
     setIsSimulationActive,
     isDemoMode,
@@ -88,23 +85,6 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
 
   return (
     <header className="sticky top-0 z-30 flex flex-col border-b border-slate-800 bg-slate-950/95 backdrop-blur-md">
-      {/* Emergency Mode Operational Top Ribbon if active */}
-      {isEmergencyMode && (
-        <div className="bg-rose-950/80 border-b border-rose-500/40 px-4 py-1.5 flex items-center justify-between text-xs text-rose-200">
-          <div className="flex items-center gap-2 font-semibold tracking-wider">
-            <span className="h-2.5 w-2.5 rounded-full bg-rose-500 animate-ping" />
-            <AlertOctagon className="h-4 w-4 text-rose-400" />
-            <span>NER DISASTER LOGISTICS EMERGENCY PROTOCOL ACTIVE — ALL HEALTH & FOOD SUPPLY CORRIDORS MONITORED</span>
-          </div>
-          <button
-            onClick={() => setIsEmergencyMode(false)}
-            className="px-2 py-0.5 rounded bg-rose-800/60 hover:bg-rose-700/80 text-white font-medium text-xs transition"
-          >
-            Deactivate
-          </button>
-        </div>
-      )}
-
       {/* Main Navbar Bar */}
       <div className="flex items-center justify-between px-4 sm:px-6 h-16">
         {/* Left: Mobile Menu Toggle + Title */}
@@ -336,26 +316,6 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
           >
             <Film className="h-3.5 w-3.5 text-emerald-400" />
             <span>Replay Film</span>
-          </button>
-
-          {/* Emergency Mode Button */}
-          <button
-            onClick={() => {
-              if (isEmergencyMode) {
-                setIsEmergencyMode(false);
-              } else {
-                setIsEmergencyMode(true);
-                setCurrentPage('emergency');
-              }
-            }}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm ${
-              isEmergencyMode
-                ? 'bg-rose-600 hover:bg-rose-500 text-white animate-pulse'
-                : 'bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30'
-            }`}
-          >
-            <AlertOctagon className="h-3.5 w-3.5 shrink-0" />
-            <span className="hidden sm:inline">{isEmergencyMode ? 'EMERGENCY ACTIVE' : 'EMERGENCY'}</span>
           </button>
 
           {/* Notifications Trigger */}

@@ -284,7 +284,7 @@ export const DashboardPage: React.FC = () => {
           icon={ShieldAlert}
           variant="blue"
           subtitle="Strategic Lifelines"
-          onClick={() => setCurrentPage('emergency')}
+          onClick={() => setCurrentPage('route-intel')}
         />
       </div>
 

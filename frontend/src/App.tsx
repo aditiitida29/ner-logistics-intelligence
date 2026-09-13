@@ -17,7 +17,6 @@ import { IncidentReportsPage } from './pages/IncidentReportsPage';
 import { AlertsPage } from './pages/AlertsPage';
 import { LogisticsPage } from './pages/LogisticsPage';
 import { DistrictIntelligencePage } from './pages/DistrictIntelligencePage';
-import { EmergencyModePage } from './pages/EmergencyModePage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { DriverPortalPage } from './pages/DriverPortalPage';
@@ -33,7 +32,7 @@ const AppContent: React.FC = () => {
   const renderPage = () => {
     // Normal User Route Guards: redirect restricted admin views to commuter dashboard
     if (isNormalUser) {
-      const adminOnlyPages = ['vehicles', 'deliveries', 'emergency', 'analytics', 'driver-portal'];
+      const adminOnlyPages = ['vehicles', 'deliveries', 'analytics', 'driver-portal'];
       if (adminOnlyPages.includes(currentPage)) {
         return <UserDashboardPage />;
       }
@@ -58,8 +57,6 @@ const AppContent: React.FC = () => {
         return <LogisticsPage />;
       case 'districts':
         return <DistrictIntelligencePage />;
-      case 'emergency':
-        return <EmergencyModePage />;
       case 'analytics':
         return <AnalyticsPage />;
       case 'settings':

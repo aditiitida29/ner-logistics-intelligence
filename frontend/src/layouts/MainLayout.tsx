@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+ï»¿import React, { ReactNode } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
 import { OfflineQueueModal } from '../components/OfflineQueueModal';
@@ -11,7 +11,6 @@ interface MainLayoutProps {
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const {
-    isEmergencyMode,
     isOffline,
     pendingOfflineCount,
     isOfflineQueueOpen,
@@ -20,9 +19,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div className={`min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans transition-colors duration-500 ${
-      isEmergencyMode ? 'emergency-mode border-t-4 border-rose-600' : ''
-    }`}>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans transition-colors duration-500">
       {/* Offline Status Warning Banner */}
       {isOffline && (
         <div className="bg-amber-600 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between shadow-lg sticky top-0 z-50">
@@ -38,16 +35,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {pendingOfflineCount} Pending Sync
             </button>
           )}
-        </div>
-      )}
-
-      {/* Emergency Global Alert Banner */}
-      {isEmergencyMode && (
-        <div className="bg-gradient-to-r from-rose-950 via-rose-900 to-rose-950 border-b border-rose-700/60 px-4 py-2 text-xs font-bold text-rose-200 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-rose-400 animate-ping" />
-            <span>EMERGENCY COMMAND MODE ACTIVE — Lifeline Corridors and Critical Medical/Relief Routes Prioritized</span>
-          </div>
         </div>
       )}
 

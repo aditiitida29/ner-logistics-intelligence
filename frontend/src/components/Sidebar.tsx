@@ -9,7 +9,6 @@ import {
   Bell,
   PackageCheck,
   Building2,
-  AlertOctagon,
   BarChart3,
   Settings,
   LogIn,
@@ -28,7 +27,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const {
     currentPage,
     setCurrentPage,
-    isEmergencyMode,
     t,
     pendingOfflineCount,
     user,
@@ -56,13 +54,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       roles: ['super_admin', 'admin', 'state_admin', 'field_officer']
     },
     { id: 'deliveries', label: t('navDeliveries'), icon: PackageCheck, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
-    {
-      id: 'emergency',
-      label: t('navEmergency'),
-      icon: AlertOctagon,
-      highlight: isEmergencyMode,
-      roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator']
-    },
     { id: 'analytics', label: t('navAnalytics'), icon: BarChart3, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
     { id: 'settings', label: t('navSettings'), icon: Settings, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
     { id: 'login', label: t('login'), icon: LogIn, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] }
@@ -121,24 +112,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 key={item.id}
                 onClick={() => handleNav(item.id)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
-                  item.highlight
-                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
-                    : isActive
+                  isActive
                     ? 'bg-blue-600 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-3 truncate">
-                  <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : item.highlight ? 'text-rose-400' : 'text-slate-400'}`} />
+                  <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   <span className="truncate">{item.label}</span>
                 </div>
                 {item.badge && (
                   <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                     {item.badge}
                   </span>
-                )}
-                {item.highlight && (
-                  <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping" />
                 )}
               </button>
             );

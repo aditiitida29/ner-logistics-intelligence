@@ -31,8 +31,6 @@ interface AppContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   t: (key: string) => string;
-  isEmergencyMode: boolean;
-  setIsEmergencyMode: (active: boolean) => void;
   isSimulationActive: boolean;
   setIsSimulationActive: (active: boolean) => void;
   isDemoMode: boolean;
@@ -120,7 +118,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
-  const [isEmergencyMode, setIsEmergencyMode] = useState<boolean>(false);
   const [isSimulationActive, setIsSimulationActive] = useState<boolean>(true);
   const [isDemoMode, setIsDemoMode] = useState<boolean>(true);
   const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
@@ -348,8 +345,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       theme,
       setTheme,
       t,
-      isEmergencyMode,
-      setIsEmergencyMode,
       isSimulationActive,
       setIsSimulationActive,
       isDemoMode,
