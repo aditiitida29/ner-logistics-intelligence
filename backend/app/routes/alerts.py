@@ -1,9 +1,11 @@
 from typing import List, Optional
+import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models.models import Alert
+from ..models.models import Alert, Incident, User
 from ..schemas.schemas import AlertResponse
+from ..auth.dependencies import require_super_admin
 
 router = APIRouter(prefix="/api/alerts", tags=["Alerts"])
 
@@ -34,3 +36,53 @@ def mark_all_alerts_read(db: Session = Depends(get_db)):
     db.query(Alert).filter(Alert.is_read == False).update({"is_read": True})
     db.commit()
     return {"success": True, "message": "All alerts marked as read"}
+
+@router.post("/{alert_id}/resolve")
+def resolve_alert(
+    alert_id: int,
+    current_admin: User = Depends(require_super_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Resolve an alert/hazard and broadcast an official Clearance Notice to all Normal Users.
+    STRICTLY RESTRICTED: Super Admin only.
+    """
+    alert = db.query(Alert).filter(Alert.id == alert_id).first()
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    
+    alert.is_read = True
+
+    route_name = None
+    if alert.related_type == "incident" and alert.related_id:
+        try:
+            inc_id = int(alert.related_id)
+            inc = db.query(Incident).filter(Incident.id == inc_id).first()
+            if inc:
+                inc.status = "Resolved"
+                route_name = inc.affected_route
+                db.commit()
+        except Exception:
+            pass
+
+    route_label = f" on {route_name}" if route_name else ""
+    clearance_alert = Alert(
+        title=f"✅ CLEARANCE NOTICE: Resolved at {alert.location}{route_label}",
+        description=f"Road clearance operations completed by {current_admin.name or 'Super Admin'}. {alert.location} corridor is now verified open and safe for normal commuter traffic.",
+        severity="Information",
+        location=alert.location,
+        related_type=alert.related_type,
+        related_id=alert.related_id,
+        is_read=False,
+        created_at=datetime.datetime.utcnow()
+    )
+    db.add(clearance_alert)
+    db.commit()
+    db.refresh(clearance_alert)
+
+    return {
+        "success": True,
+        "message": f"Alert #{alert_id} resolved! Clearance Notice broadcast to all users.",
+        "clearance_alert": AlertResponse.model_validate(clearance_alert)
+    }
+

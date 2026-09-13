@@ -16,7 +16,8 @@ import {
   MapPin,
   Check,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  CheckCircle2
 } from 'lucide-react';
 
 export const AlertsPage: React.FC = () => {
@@ -41,6 +42,12 @@ export const AlertsPage: React.FC = () => {
 
   useEffect(() => {
     loadAlerts();
+
+    const handleAlertsUpdated = () => {
+      loadAlerts();
+    };
+    window.addEventListener('ner:alerts-updated', handleAlertsUpdated);
+    return () => window.removeEventListener('ner:alerts-updated', handleAlertsUpdated);
   }, []);
 
   const handleMarkRead = async (id: number, e?: React.MouseEvent) => {
@@ -66,6 +73,9 @@ export const AlertsPage: React.FC = () => {
 
   const filteredAlerts = alerts.filter(a => {
     if (severityFilter === 'All') return true;
+    if (severityFilter === 'Clearance') {
+      return a.title.toLowerCase().includes('clearance') || a.title.toLowerCase().includes('resolved');
+    }
     return a.severity === severityFilter;
   });
 
@@ -111,24 +121,35 @@ export const AlertsPage: React.FC = () => {
 
       {/* Severity Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-slate-900 border border-slate-800 w-fit">
-        {['All', 'Critical', 'Warning', 'Information'].map((sev) => (
-          <button
-            key={sev}
-            onClick={() => setSeverityFilter(sev)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              severityFilter === sev
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            {sev} ({sev === 'All' ? alerts.length : alerts.filter(a => a.severity === sev).length})
-          </button>
-        ))}
+        {['All', 'Critical', 'Warning', 'Clearance', 'Information'].map((sev) => {
+          const count = sev === 'All'
+            ? alerts.length
+            : sev === 'Clearance'
+            ? alerts.filter(a => a.title.toLowerCase().includes('clearance') || a.title.toLowerCase().includes('resolved')).length
+            : alerts.filter(a => a.severity === sev).length;
+
+          return (
+            <button
+              key={sev}
+              onClick={() => setSeverityFilter(sev)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                severityFilter === sev
+                  ? sev === 'Clearance'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              {sev === 'Clearance' ? '✅ Clearance Notices' : sev} ({count})
+            </button>
+          );
+        })}
       </div>
 
       {/* Alerts Feed */}
       <div className="space-y-3">
         {filteredAlerts.map((a) => {
+          const isClearance = a.title.toLowerCase().includes('clearance') || a.title.toLowerCase().includes('resolved');
           const isCritical = a.severity === 'Critical';
           const isWarning = a.severity === 'Warning';
 
@@ -149,6 +170,8 @@ export const AlertsPage: React.FC = () => {
               className={`p-4 rounded-xl border transition cursor-pointer flex flex-col sm:flex-row items-start justify-between gap-4 shadow-lg hover:border-slate-600 ${
                 a.is_read
                   ? 'border-slate-800/80 bg-slate-900/60 opacity-80 hover:opacity-100'
+                  : isClearance
+                  ? 'border-emerald-500/40 bg-emerald-950/20'
                   : isCritical
                   ? 'border-rose-500/40 bg-rose-950/20'
                   : isWarning
@@ -158,7 +181,9 @@ export const AlertsPage: React.FC = () => {
             >
               <div className="flex items-start gap-3 flex-1">
                 <div className="mt-0.5">
-                  {isCritical ? (
+                  {isClearance ? (
+                    <CheckCircle2 className="h-5 w-5 text-emerald-400 animate-pulse" />
+                  ) : isCritical ? (
                     <AlertOctagon className="h-5 w-5 text-rose-400 animate-pulse" />
                   ) : isWarning ? (
                     <AlertTriangle className="h-5 w-5 text-amber-400" />
@@ -169,9 +194,11 @@ export const AlertsPage: React.FC = () => {
 
                 <div className="space-y-1 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm font-bold text-slate-100">{a.title}</h3>
-                    <Badge variant={isCritical ? 'blocked' : (isWarning ? 'caution' : 'info')} size="sm">
-                      {a.severity}
+                    <h3 className={`text-sm font-bold ${isClearance ? 'text-emerald-300' : 'text-slate-100'}`}>
+                      {a.title}
+                    </h3>
+                    <Badge variant={isClearance ? 'accessible' : (isCritical ? 'blocked' : (isWarning ? 'caution' : 'info'))} size="sm">
+                      {isClearance ? 'CLEARANCE' : a.severity}
                     </Badge>
                     {a.affected_route && (
                       <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono text-[10px] font-bold">

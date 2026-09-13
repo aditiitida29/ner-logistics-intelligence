@@ -55,7 +55,8 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
     userLocation,
     isLocating,
     syncRealLocation,
-    setShowCinematicIntro
+    setShowCinematicIntro,
+    unreadAlertCount
   } = useApp();
 
   const [liveClock, setLiveClock] = useState<{
@@ -330,10 +331,16 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
           <button
             onClick={() => setCurrentPage('alerts')}
             className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-            title="View Alerts"
+            title="View Alerts & Clearance Notices"
           >
             <Bell className="h-4 w-4" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-slate-950" />
+            {unreadAlertCount > 0 ? (
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white ring-2 ring-slate-950 font-mono animate-pulse">
+                {unreadAlertCount > 99 ? '99+' : unreadAlertCount}
+              </span>
+            ) : (
+              <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500/80" />
+            )}
           </button>
 
           {/* User Profile / Logout */}

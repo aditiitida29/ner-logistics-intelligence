@@ -181,7 +181,7 @@ def update_incident(
     if inc.status.lower() in ["resolved", "closed"] and prev_status.lower() not in ["resolved", "closed"]:
         resolution_alert = Alert(
             title=f"✅ CLEARANCE NOTICE: {inc.type} Resolved at {inc.location_name}{route_label}",
-            description=f"Road clearance operations completed. Traffic and freight transit resumed at {inc.location_name}.",
+            description=f"Road clearance operations completed by {current_admin.name or 'Super Admin Command'}. {inc.location_name} corridor is now cleared and verified open for all commuter and freight traffic.",
             severity="Information",
             location=inc.location_name,
             related_type="incident",
@@ -232,7 +232,7 @@ def update_incident_status(
     if status.lower() in ["resolved", "closed"] and prev_status.lower() not in ["resolved", "closed"]:
         resolution_alert = Alert(
             title=f"✅ CLEARANCE NOTICE: {inc.type} Resolved at {inc.location_name}{route_label}",
-            description=f"Road clearance operations completed. {inc.location_name} corridor is now open.",
+            description=f"Road clearance operations completed by {current_admin.name or 'Super Admin Command'}. {inc.location_name} corridor is now cleared and verified open for all commuter and freight traffic.",
             severity="Information",
             location=inc.location_name,
             related_type="incident",

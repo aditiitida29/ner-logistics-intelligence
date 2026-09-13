@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, Region, Language } from '../types';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
+import { User, Region, Language, AlertItem } from '../types';
 import { translations } from './translations';
 import { api } from '../services/api';
 import { OfflineSyncService } from '../services/offlineSync';
@@ -59,6 +59,9 @@ interface AppContextType {
   syncRealLocation: (notify?: boolean) => Promise<void>;
   showCinematicIntro: boolean;
   setShowCinematicIntro: (show: boolean) => void;
+  unreadAlertCount: number;
+  alerts: AlertItem[];
+  refreshAlerts: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -92,6 +95,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [showCinematicIntro, setShowCinematicIntro] = useState<boolean>(true);
+  const [unreadAlertCount, setUnreadAlertCount] = useState<number>(0);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const knownAlertIdsRef = useRef<Set<number>>(new Set());
+  const isInitialAlertLoadRef = useRef<boolean>(true);
 
   // Sync real physical device GPS location
   const syncRealLocation = async (notify: boolean = false): Promise<void> => {
@@ -241,6 +248,53 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearInterval(interval);
   }, [isSimulationActive]);
 
+  // Real-Time Alert Polling: Dispatches instant alert toasts for new hazards AND clearance resolutions
+  const pollAlerts = async () => {
+    try {
+      const liveAlerts = await api.getAlerts();
+      setAlerts(liveAlerts);
+      setUnreadAlertCount(liveAlerts.filter(a => !a.is_read).length);
+
+      if (isInitialAlertLoadRef.current) {
+        liveAlerts.forEach(a => knownAlertIdsRef.current.add(a.id));
+        isInitialAlertLoadRef.current = false;
+        return;
+      }
+
+      // Check for newly broadcast alerts
+      for (const a of liveAlerts) {
+        if (!knownAlertIdsRef.current.has(a.id)) {
+          knownAlertIdsRef.current.add(a.id);
+
+          // Broadcast real-time toast to the user
+          const isClearance = a.title.toLowerCase().includes('clearance') || a.title.toLowerCase().includes('resolved');
+          if (isClearance) {
+            addToast(`🟢 ROAD CLEARANCE: ${a.title.replace('✅ ', '')} — Route reopened!`, 'success');
+          } else {
+            addToast(`🚨 HAZARD ALERT: ${a.title.replace('🚨 ', '')}`, a.severity === 'Critical' ? 'error' : 'warning');
+          }
+
+          // Trigger view reload in listening components
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('ner:alerts-updated', { detail: a }));
+          }
+        }
+      }
+    } catch {
+      // graceful offline fallback
+    }
+  };
+
+  useEffect(() => {
+    pollAlerts();
+    const alertInterval = setInterval(pollAlerts, 4000);
+    return () => clearInterval(alertInterval);
+  }, []);
+
+  const refreshAlerts = async () => {
+    await pollAlerts();
+  };
+
   return (
     <AppContext.Provider value={{
       user,
@@ -281,7 +335,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isLocating,
       syncRealLocation,
       showCinematicIntro,
-      setShowCinematicIntro
+      setShowCinematicIntro,
+      unreadAlertCount,
+      alerts,
+      refreshAlerts
     }}>
       {children}
     </AppContext.Provider>

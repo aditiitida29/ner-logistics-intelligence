@@ -541,6 +541,20 @@ class ApiService {
     return { success: true };
   }
 
+  async resolveAlert(alertId: number) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/alerts/${alertId}/resolve`, {
+        method: 'POST',
+        headers: this.getAuthHeader()
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({ detail: 'Failed to resolve alert' }));
+      throw new Error(err.detail || `Server returned ${res.status}`);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
   // Emergency Mode
   async getEmergencyOverview() {
     try {

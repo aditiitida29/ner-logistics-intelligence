@@ -37,6 +37,7 @@ export const UserDashboardPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState('All');
   const [selectedSeverity, setSelectedSeverity] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
 
   // Selected Alert for Details Modal
   const [selectedAlert, setSelectedAlert] = useState<AlertDetailData | null>(null);
@@ -99,6 +100,12 @@ export const UserDashboardPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
+
+    const handleAlertsUpdated = () => {
+      loadData();
+    };
+    window.addEventListener('ner:alerts-updated', handleAlertsUpdated);
+    return () => window.removeEventListener('ner:alerts-updated', handleAlertsUpdated);
   }, []);
 
   const openIncidentModal = (inc: Incident) => {
@@ -147,14 +154,24 @@ export const UserDashboardPage: React.FC = () => {
   const filteredIncidents = incidents.filter(i => {
     const matchesType = selectedType === 'All' || i.type.toLowerCase() === selectedType.toLowerCase();
     const matchesSev = selectedSeverity === 'All' || i.severity.toLowerCase() === selectedSeverity.toLowerCase();
+    const matchesStatus = selectedStatus === 'All' ||
+      (selectedStatus === 'Active' && i.status.toLowerCase() !== 'resolved') ||
+      (selectedStatus === 'Resolved' && i.status.toLowerCase() === 'resolved');
     const matchesSearch = !search ||
       i.location_name.toLowerCase().includes(search.toLowerCase()) ||
       (i.affected_route || '').toLowerCase().includes(search.toLowerCase()) ||
       i.description.toLowerCase().includes(search.toLowerCase());
-    return matchesType && matchesSev && matchesSearch;
+    return matchesType && matchesSev && matchesStatus && matchesSearch;
   });
 
   const activeLandslides = incidents.filter(i => i.type === 'Landslide' && i.status.toLowerCase() !== 'resolved');
+  
+  // Route clearances / resolved hazard alerts sent to Normal Users
+  const clearanceAlerts = alerts.filter(a => 
+    a.title.toLowerCase().includes('clearance') || 
+    a.title.toLowerCase().includes('resolved')
+  );
+  const resolvedIncidents = incidents.filter(i => i.status.toLowerCase() === 'resolved');
   const criticalCount = incidents.filter(i => i.severity === 'Critical' && i.status.toLowerCase() !== 'resolved').length;
 
   return (
@@ -243,6 +260,84 @@ export const UserDashboardPage: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Route Clearance Notices & Resolved Hazards (Sent to Normal Users upon Super Admin resolution) */}
+      {(clearanceAlerts.length > 0 || resolvedIncidents.length > 0) && (
+        <div className="p-4 rounded-xl border border-emerald-500/40 bg-emerald-950/20 shadow-lg space-y-2.5 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400 animate-pulse" />
+              <h2 className="text-sm font-bold text-white tracking-wide uppercase">
+                Route Clearance Notices ({clearanceAlerts.length || resolvedIncidents.length} Hazards Resolved)
+              </h2>
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">
+              CORRIDOR RESTORED • SAFE TO TRANSIT
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+            {clearanceAlerts.length > 0 ? (
+              clearanceAlerts.slice(0, 3).map((cl) => (
+                <div
+                  key={cl.id}
+                  onClick={() => openAlertModal(cl)}
+                  className="p-3 rounded-lg bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 cursor-pointer transition group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold font-mono">
+                        {cl.affected_route || 'Restored Corridor'}
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" /> Cleared
+                      </span>
+                    </div>
+                    <h3 className="text-xs font-bold text-white group-hover:text-emerald-300 transition line-clamp-1">
+                      {cl.title.replace('✅ CLEARANCE NOTICE: ', '')}
+                    </h3>
+                    <p className="text-[11px] text-slate-300 line-clamp-2 mt-1">
+                      {cl.description}
+                    </p>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-emerald-400 font-medium">
+                    <span>Click to open clearance advisory</span>
+                    <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              resolvedIncidents.slice(0, 3).map((ri) => (
+                <div
+                  key={ri.id}
+                  onClick={() => openIncidentModal(ri)}
+                  className="p-3 rounded-lg bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-400 cursor-pointer transition group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold font-mono">
+                        {ri.affected_route || 'Cleared Road'}
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" /> Resolved
+                      </span>
+                    </div>
+                    <h3 className="text-xs font-bold text-white group-hover:text-emerald-300 transition line-clamp-1">
+                      {ri.location_name}
+                    </h3>
+                    <p className="text-[11px] text-slate-300 line-clamp-2 mt-1">
+                      {ri.description}
+                    </p>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-emerald-400 font-medium">
+                    <span>Click to open clearance advisory</span>
+                    <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition" />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
@@ -338,6 +433,16 @@ export const UserDashboardPage: React.FC = () => {
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
+            </select>
+
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="bg-slate-950 border border-slate-800 text-xs text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-500"
+            >
+              <option value="All">All Statuses</option>
+              <option value="Active">Active Hazards</option>
+              <option value="Resolved">Resolved & Cleared</option>
             </select>
           </div>
         </div>
