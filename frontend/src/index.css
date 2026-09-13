@@ -2,59 +2,210 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+:root, [data-theme="dark"] {
+  color-scheme: dark;
+  --theme-name: 'dark';
+  --color-text-white: 255 255 255;
+  --color-slate-50: 249 250 251;
+  --color-slate-100: 243 244 246;
+  --color-slate-200: 229 231 235;
+  --color-slate-300: 209 213 219;
+  --color-slate-400: 156 163 175;
+  --color-slate-500: 107 114 128;
+  --color-slate-600: 75 85 99;
+  --color-slate-700: 55 65 81;
+  --color-slate-800: 31 41 55;
+  --color-slate-850: 22 32 48;
+  --color-slate-900: 17 24 39;
+  --color-slate-950: 11 15 25;
+
+  --color-blue-50: 15 23 42;
+  --color-blue-100: 30 41 59;
+  --color-blue-200: 30 58 138;
+  --color-blue-300: 37 99 235;
+  --color-blue-400: 96 165 250;
+  --color-blue-500: 59 130 246;
+  --color-blue-600: 37 99 235;
+  --color-blue-700: 29 78 216;
+  --color-blue-800: 30 64 175;
+  --color-blue-900: 30 41 59;
+  --color-blue-950: 10 18 30;
+}
+
+/* Light Theme: Crisp Clean Daylight & Pristine White Surfaces */
+[data-theme="light"] {
+  color-scheme: light;
+  --theme-name: 'light';
+  --color-text-white: 15 23 42;
+  --color-slate-50: 2 6 23;
+  --color-slate-100: 15 23 42;
+  --color-slate-200: 30 41 59;
+  --color-slate-300: 51 65 85;
+  --color-slate-400: 71 85 105;
+  --color-slate-500: 100 116 139;
+  --color-slate-600: 148 163 184;
+  --color-slate-700: 203 213 225;
+  --color-slate-800: 226 232 240;
+  --color-slate-850: 241 245 249;
+  --color-slate-900: 255 255 255;
+  --color-slate-950: 248 250 252;
+
+  --color-blue-50: 239 246 255;
+  --color-blue-100: 219 234 254;
+  --color-blue-200: 191 219 254;
+  --color-blue-300: 147 197 253;
+  --color-blue-400: 29 78 216;
+  --color-blue-500: 37 99 235;
+  --color-blue-600: 37 99 235;
+  --color-blue-700: 29 78 216;
+  --color-blue-800: 30 64 175;
+  --color-blue-900: 219 234 254;
+  --color-blue-950: 239 246 255;
+}
+
+/* Sepia Theme: Soft brownish, cream, or beige tones (#F5E8D8). Mimics aged paper and reduces harsh blue light */
+[data-theme="sepia"] {
+  color-scheme: light;
+  --theme-name: 'sepia';
+  --color-text-white: 44 26 13;
+  --color-slate-50: 28 15 6;
+  --color-slate-100: 44 26 13;
+  --color-slate-200: 62 40 22;
+  --color-slate-300: 84 57 34;
+  --color-slate-400: 112 80 52;
+  --color-slate-500: 138 104 74;
+  --color-slate-600: 164 136 106;
+  --color-slate-700: 196 172 144;
+  --color-slate-800: 218 198 174;
+  --color-slate-850: 238 222 202;
+  --color-slate-900: 252 247 240;
+  --color-slate-950: 245 232 216; /* Exact #F5E8D8 background */
+
+  --color-blue-50: 250 243 236;
+  --color-blue-100: 246 228 213;
+  --color-blue-200: 236 194 161;
+  --color-blue-300: 224 158 110;
+  --color-blue-400: 198 120 69;
+  --color-blue-500: 168 90 45;
+  --color-blue-600: 142 74 35;
+  --color-blue-700: 111 59 29;
+  --color-blue-800: 76 41 21;
+  --color-blue-900: 246 228 213;
+  --color-blue-950: 250 243 236;
+}
+
+/* High Contrast: Pitch Black & Pure White Borders for Maximal Visual Accessibility */
+[data-theme="high-contrast"] {
+  color-scheme: dark;
+  --theme-name: 'high-contrast';
+  --color-text-white: 255 255 255;
+  --color-slate-50: 255 255 255;
+  --color-slate-100: 255 255 255;
+  --color-slate-200: 255 255 255;
+  --color-slate-300: 245 245 245;
+  --color-slate-400: 230 230 230;
+  --color-slate-500: 210 210 210;
+  --color-slate-600: 180 180 180;
+  --color-slate-700: 255 255 255;
+  --color-slate-800: 255 255 255;
+  --color-slate-850: 20 20 20;
+  --color-slate-900: 10 10 10;
+  --color-slate-950: 0 0 0;
+
+  --color-blue-50: 0 0 0;
+  --color-blue-100: 20 20 20;
+  --color-blue-200: 40 40 40;
+  --color-blue-300: 255 255 0;
+  --color-blue-400: 255 255 0;
+  --color-blue-500: 255 240 50;
+  --color-blue-600: 255 230 0;
+  --color-blue-700: 230 200 0;
+  --color-blue-800: 255 255 255;
+  --color-blue-900: 20 20 20;
+  --color-blue-950: 0 0 0;
+}
+
+/* Neon / Cyberpunk: Dark background with glowing electric blue, hot pink, and neon green */
+[data-theme="neon"] {
+  color-scheme: dark;
+  --theme-name: 'neon';
+  --color-text-white: 255 255 255;
+  --color-slate-50: 255 255 255;
+  --color-slate-100: 255 255 255;
+  --color-slate-200: 240 250 255;
+  --color-slate-300: 220 240 255;
+  --color-slate-400: 0 240 255;
+  --color-slate-500: 0 220 255;
+  --color-slate-600: 57 255 20;
+  --color-slate-700: 255 0 127;
+  --color-slate-800: 0 240 255;
+  --color-slate-850: 16 22 40;
+  --color-slate-900: 10 14 26;
+  --color-slate-950: 5 7 14;
+
+  --color-blue-50: 10 5 16;
+  --color-blue-100: 25 10 35;
+  --color-blue-200: 45 15 60;
+  --color-blue-300: 57 255 20;
+  --color-blue-400: 0 240 255;
+  --color-blue-500: 0 240 255;
+  --color-blue-600: 255 0 127;
+  --color-blue-700: 210 0 100;
+  --color-blue-800: 0 240 255;
+  --color-blue-900: 25 10 35;
+  --color-blue-950: 10 5 16;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #190F09;
-  color: #F8F2EA;
+  background-color: rgb(var(--color-slate-950));
+  color: rgb(var(--color-slate-100));
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Custom scrollbars in warm coffee and cream tones */
+/* Custom scrollbars dynamically styled according to theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #190F09;
+  background: rgb(var(--color-slate-950));
 }
 ::-webkit-scrollbar-thumb {
-  background: #3B281C;
+  background: rgb(var(--color-slate-800));
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #543928;
+  background: rgb(var(--color-slate-700));
 }
 
-/* Leaflet map styles with warm coffee brown and cream white theme */
+/* Leaflet map styles with theme variables */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background-color: #190F09 !important;
+  background-color: rgb(var(--color-slate-950)) !important;
   font-family: 'Inter', sans-serif !important;
   z-index: 10;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #251810 !important;
-  color: #F8F2EA !important;
-  border: 1px solid #3B281C;
+  background: rgb(var(--color-slate-900)) !important;
+  color: rgb(var(--color-slate-100)) !important;
+  border: 1px solid rgb(var(--color-slate-800));
   border-radius: 0.5rem !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
 }
 
 .leaflet-popup-tip {
-  background: #251810 !important;
+  background: rgb(var(--color-slate-900)) !important;
 }
 
 .leaflet-control-zoom-in, .leaflet-control-zoom-out {
-  background-color: #251810 !important;
-  color: #F8F2EA !important;
-  border-color: #3B281C !important;
+  background-color: rgb(var(--color-slate-900)) !important;
+  color: rgb(var(--color-slate-100)) !important;
+  border-color: rgb(var(--color-slate-800)) !important;
 }
 
 /* Pulsing radar dot for emergency & critical */
@@ -78,4 +229,57 @@ body {
 .pulse-gps {
   animation: gps-pulse 2.2s infinite ease-out;
 }
+
+/* Button contrast rules in light and sepia themes */
+[data-theme="light"] button[class*="bg-blue-600"],
+[data-theme="light"] button[class*="bg-rose-600"],
+[data-theme="light"] button[class*="bg-emerald-600"],
+[data-theme="light"] button[class*="bg-amber-600"],
+[data-theme="sepia"] button[class*="bg-blue-600"],
+[data-theme="sepia"] button[class*="bg-rose-600"],
+[data-theme="sepia"] button[class*="bg-emerald-600"],
+[data-theme="sepia"] button[class*="bg-amber-600"],
+[data-theme="light"] [class*="bg-blue-600"] > *,
+[data-theme="sepia"] [class*="bg-blue-600"] > *,
+[data-theme="light"] [class*="bg-rose-600"] > *,
+[data-theme="sepia"] [class*="bg-rose-600"] > *,
+[data-theme="light"] [class*="bg-emerald-600"] > *,
+[data-theme="sepia"] [class*="bg-emerald-600"] > * {
+  color: #FFFFFF !important;
+}
+
+/* High Contrast Theme Enhancements */
+[data-theme="high-contrast"] .border-slate-800,
+[data-theme="high-contrast"] .border-slate-700 {
+  border-color: #FFFFFF !important;
+  border-width: 1.5px !important;
+}
+
+[data-theme="high-contrast"] button[class*="bg-blue-600"] {
+  background-color: #FFE600 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+[data-theme="high-contrast"] button[class*="bg-blue-600"] * {
+  color: #000000 !important;
+}
+
+/* Neon / Cyberpunk Theme Glow & Highlights */
+[data-theme="neon"] .border-slate-800 {
+  border-color: rgba(0, 240, 255, 0.4) !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+}
+
+[data-theme="neon"] .border-slate-800:hover {
+  border-color: rgba(255, 0, 127, 0.6) !important;
+  box-shadow: 0 0 14px rgba(255, 0, 127, 0.3);
+}
+
+[data-theme="neon"] button[class*="bg-blue-600"] {
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.5), inset 0 0 8px rgba(0, 240, 255, 0.3);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
 

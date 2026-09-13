@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Region, Language } from '../types';
+import { Region, Language, Theme } from '../types';
 import {
   Bell,
   Search,
@@ -15,7 +15,8 @@ import {
   Clock,
   Calendar,
   Navigation,
-  Film
+  Film,
+  Palette
 } from 'lucide-react';
 
 const REGIONS: Region[] = [
@@ -36,6 +37,8 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
     setSelectedRegion,
     language,
     setLanguage,
+    theme,
+    setTheme,
     t,
     isEmergencyMode,
     setIsEmergencyMode,
@@ -196,6 +199,34 @@ export const Navbar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle })
               <option value="as">অসমীয়া</option>
             </select>
             <Globe className="h-3 w-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          {/* Quick Theme Switcher */}
+          <div className="relative">
+            <select
+              value={theme}
+              onChange={(e) => {
+                const nextTheme = e.target.value as Theme;
+                setTheme(nextTheme);
+                const labels: Record<Theme, string> = {
+                  'light': 'Light Mode',
+                  'dark': 'Dark Mode',
+                  'sepia': 'Sepia (Aged Paper)',
+                  'high-contrast': 'High Contrast',
+                  'neon': 'Neon / Cyberpunk'
+                };
+                addToast(`Theme set to ${labels[nextTheme]}`, 'info');
+              }}
+              className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg pl-2.5 pr-7 py-1.5 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+              title="Change Display Theme"
+            >
+              <option value="light">☀️ Light</option>
+              <option value="dark">🌙 Dark</option>
+              <option value="sepia">📜 Sepia</option>
+              <option value="high-contrast">🔲 High Contrast</option>
+              <option value="neon">⚡ Neon</option>
+            </select>
+            <Palette className="h-3 w-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* Offline Sync Status Badge & Queue Trigger */}

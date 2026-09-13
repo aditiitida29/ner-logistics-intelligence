@@ -7,34 +7,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Core Layout: Elegant Brown & Cream White Theme
+        // Dynamic Multi-Theme Support via CSS Variables
+        white: 'rgb(var(--color-text-white) / <alpha-value>)',
         slate: {
-          50: '#FDFBF7',   // Pure Cream White
-          100: '#F8F2EA',  // Brilliant Cream White
-          200: '#ECE0D2',  // Soft Ivory Cream
-          300: '#DAC0A9',  // Warm Light Cream
-          400: '#BE997B',  // Warm Almond / Sand Text
-          500: '#966E52',  // Cinnamon / Cocoa
-          600: '#735039',  // Warm Earth Nutmeg
-          700: '#543928',  // Earthy Cocoa Divider
-          800: '#3B281C',  // Warm Walnut / Dark Coffee Border
-          850: '#2E1E14',  // Roasted Bean Surface
-          900: '#251810',  // Dark Chocolate Mocha Surface
-          950: '#190F09',  // Deepest Roasted Espresso Background
+          50: 'rgb(var(--color-slate-50) / <alpha-value>)',
+          100: 'rgb(var(--color-slate-100) / <alpha-value>)',
+          200: 'rgb(var(--color-slate-200) / <alpha-value>)',
+          300: 'rgb(var(--color-slate-300) / <alpha-value>)',
+          400: 'rgb(var(--color-slate-400) / <alpha-value>)',
+          500: 'rgb(var(--color-slate-500) / <alpha-value>)',
+          600: 'rgb(var(--color-slate-600) / <alpha-value>)',
+          700: 'rgb(var(--color-slate-700) / <alpha-value>)',
+          800: 'rgb(var(--color-slate-800) / <alpha-value>)',
+          850: 'rgb(var(--color-slate-850) / <alpha-value>)',
+          900: 'rgb(var(--color-slate-900) / <alpha-value>)',
+          950: 'rgb(var(--color-slate-950) / <alpha-value>)',
         },
-        // Primary Interactive Accents (Warm Saddle Brown & Cognac)
         blue: {
-          50: '#FAF3EC',
-          100: '#F6E4D5',
-          200: '#ECC2A1',
-          300: '#E09E6E',
-          400: '#C67845',  // Amber Bronze Accent
-          500: '#A85A2D',  // Warm Caramel Brown
-          600: '#8E4A23',  // Rich Saddle Brown / Cognac (Primary CTA)
-          700: '#6F3B1D',  // Dark Saddle Leather
-          800: '#4C2915',  // Deep Mahogany
-          900: '#311A0D',  // Roasted Cocoa Tint
-          950: '#22120A',  // Deep Espresso Tint
+          50: 'rgb(var(--color-blue-50) / <alpha-value>)',
+          100: 'rgb(var(--color-blue-100) / <alpha-value>)',
+          200: 'rgb(var(--color-blue-200) / <alpha-value>)',
+          300: 'rgb(var(--color-blue-300) / <alpha-value>)',
+          400: 'rgb(var(--color-blue-400) / <alpha-value>)',
+          500: 'rgb(var(--color-blue-500) / <alpha-value>)',
+          600: 'rgb(var(--color-blue-600) / <alpha-value>)',
+          700: 'rgb(var(--color-blue-700) / <alpha-value>)',
+          800: 'rgb(var(--color-blue-800) / <alpha-value>)',
+          900: 'rgb(var(--color-blue-900) / <alpha-value>)',
+          950: 'rgb(var(--color-blue-950) / <alpha-value>)',
         },
         // Functional Green Gradient (Representing Different System Functions)
         green: {

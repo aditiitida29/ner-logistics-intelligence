@@ -14,8 +14,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('ner_theme') || 'dark';
+          document.documentElement.setAttribute('data-theme', saved);
+        } catch(e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-[#190F09] text-[#F8F2EA] antialiased selection:bg-[#8E4A23] selection:text-[#F8F2EA]">
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator']
     },
     { id: 'analytics', label: t('navAnalytics'), icon: BarChart3, roles: ['super_admin', 'admin', 'state_admin', 'logistics_operator'] },
-    { id: 'settings', label: t('navSettings'), icon: Settings, roles: ['super_admin', 'admin'] },
+    { id: 'settings', label: t('navSettings'), icon: Settings, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] },
     { id: 'login', label: t('login'), icon: LogIn, roles: ['normal_user', 'super_admin', 'admin', 'state_admin', 'field_officer', 'logistics_operator', 'driver'] }
   ];
 

@@ -33,7 +33,7 @@ const AppContent: React.FC = () => {
   const renderPage = () => {
     // Normal User Route Guards: redirect restricted admin views to commuter dashboard
     if (isNormalUser) {
-      const adminOnlyPages = ['vehicles', 'deliveries', 'emergency', 'analytics', 'settings', 'driver-portal'];
+      const adminOnlyPages = ['vehicles', 'deliveries', 'emergency', 'analytics', 'driver-portal'];
       if (adminOnlyPages.includes(currentPage)) {
         return <UserDashboardPage />;
       }

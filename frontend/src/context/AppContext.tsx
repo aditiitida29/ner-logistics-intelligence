@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
-import { User, Region, Language, AlertItem } from '../types';
+import { User, Region, Language, Theme, AlertItem } from '../types';
 import { translations } from './translations';
 import { api } from '../services/api';
 import { OfflineSyncService } from '../services/offlineSync';
@@ -28,6 +28,8 @@ interface AppContextType {
   setSelectedRegion: (region: Region) => void;
   language: Language;
   setLanguage: (lang: Language) => void;
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
   t: (key: string) => string;
   isEmergencyMode: boolean;
   setIsEmergencyMode: (active: boolean) => void;
@@ -80,6 +82,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentPage, setCurrentPage] = useState<string>('dashboard');
   const [selectedRegion, setSelectedRegion] = useState<Region>('Entire NER');
   const [language, setLanguage] = useState<Language>('en');
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ner_theme') as Theme | null;
+      if (saved && ['light', 'dark', 'sepia', 'high-contrast', 'neon'].includes(saved)) {
+        return saved;
+      }
+    }
+    return 'dark';
+  });
+
+  const applyTheme = (t: Theme) => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', t);
+      const themeColors: Record<Theme, string> = {
+        'light': '#F8FAFC',
+        'dark': '#0B0F19',
+        'sepia': '#F5E8D8',
+        'high-contrast': '#000000',
+        'neon': '#05070E'
+      };
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', themeColors[t] || '#0B0F19');
+      }
+    }
+  };
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ner_theme', newTheme);
+      applyTheme(newTheme);
+    }
+  };
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
   const [isEmergencyMode, setIsEmergencyMode] = useState<boolean>(false);
   const [isSimulationActive, setIsSimulationActive] = useState<boolean>(true);
   const [isDemoMode, setIsDemoMode] = useState<boolean>(true);
@@ -305,6 +345,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setSelectedRegion,
       language,
       setLanguage,
+      theme,
+      setTheme,
       t,
       isEmergencyMode,
       setIsEmergencyMode,

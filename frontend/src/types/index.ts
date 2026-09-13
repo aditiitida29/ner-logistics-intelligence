@@ -11,6 +11,8 @@ export type Region =
 
 export type Language = 'en' | 'hi' | 'as';
 
+export type Theme = 'light' | 'dark' | 'sepia' | 'high-contrast' | 'neon';
+
 export interface User {
   id: number;
   name: string;
